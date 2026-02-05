@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTIONER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        /* CSS Variables for theming */
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #fff;
+            --bg-tertiary: #e0e0e0;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --border-color: #1a1a1a;
+            --border-light: #e0e0e0;
+            --accent: #ff6b00;
+            --card-bg: #f5f5f5;
+            --input-bg: #fff;
+            --shadow-color: #ff6b00;
+            --btn-primary-bg: #1a1a1a;
+            --btn-primary-text: #fff;
+            --toast-bg: #1a1a1a;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1f1f1f;
+            --text-primary: #f5f5f5;
+            --text-secondary: #aaa;
+            --text-muted: #666;
+            --border-color: #f5f5f5;
+            --border-light: #333;
+            --accent: #ff6b00;
+            --card-bg: #1a1a1a;
+            --input-bg: #0a0a0a;
+            --shadow-color: #ff6b00;
+            --btn-primary-bg: #f5f5f5;
+            --btn-primary-text: #0a0a0a;
+            --toast-bg: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            box-shadow: 4px 4px 0 var(--accent);
+            transform: translate(-2px, -2px);
+        }
+
+        .theme-toggle-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Header - Industrial style */
+        header {
+            text-align: left;
+            padding: 40px 0 30px 0;
+            border-bottom: 3px solid var(--border-color);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        header::after {
+            content: 'c/o LORA TRAINING';
+            position: absolute;
+            top: 10px;
+            right: 80px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+
+        h1 .highlight {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-top: 15px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Orange zip-tie tag */
+        .zip-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .zip-tag::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+        }
+
+        /* Sidebar - Deconstructed panel */
+        .sidebar {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .sidebar::before {
+            content: 'SETTINGS';
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar h2 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 4px 4px 0 var(--accent);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-light);
+            margin: 25px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Drop Zone - Industrial */
+        .drop-zone {
+            border: 3px dashed var(--border-color);
+            padding: 80px 20px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .drop-zone::before {
+            content: 'DROP ZONE';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+
+        .drop-zone-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            filter: grayscale(100%);
+        }
+
+        .drop-zone p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .drop-zone .browse-btn {
+            display: inline-block;
+            padding: 14px 30px;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            margin-top: 15px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: 2px solid var(--border-color);
+        }
+
+        .drop-zone .browse-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Action Buttons - Off-White style */
+        .action-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: 2px solid var(--border-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .btn-primary {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 6px 6px 0 var(--accent);
+            transform: translate(-3px, -3px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 4px 4px 0 var(--border-color);
+            transform: translate(-2px, -2px);
+        }
+
+        .btn-success {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            box-shadow: 6px 6px 0 var(--border-color);
+            transform: translate(-3px, -3px);
+        }
+
+        .btn-success:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        .btn-danger:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Image Grid Section */
+        .images-section {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            padding: 25px;
+            position: relative;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .images-section::before {
+            content: 'IMAGES';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-secondary);
+            padding: 0 10px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .images-section h2 {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .image-count {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 700;
+            background: var(--btn-primary-bg);
+            padding: 5px 12px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        /* Image Cards - Deconstructed */
+        .image-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .image-card::before {
+            content: attr(data-index);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-color);
+            filter: grayscale(20%);
+            transition: filter 0.3s;
+        }
+
+        .image-card:hover .image-preview {
+            filter: grayscale(0%);
+        }
+
+        .image-info {
+            padding: 20px;
+        }
+
+        .image-filename {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            word-break: break-all;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+
+        .caption-input {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .caption-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 3px 3px 0 var(--accent);
+        }
+
+        .caption-status {
+            margin-top: 10px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-pending {
+            color: var(--text-muted);
+        }
+
+        .status-generating {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .status-success {
+            color: var(--text-primary);
+        }
+
+        .status-error {
+            color: #e53935;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: none;
+            margin-bottom: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 28px;
+            color: var(--btn-primary-text);
+            background: var(--toast-bg);
+            font-weight: 700;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border: 2px solid var(--border-color);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--toast-bg);
+        }
+
+        .toast.error {
+            background: #e53935;
+            color: white;
+            border-color: #e53935;
+        }
+
+        /* Footer signature */
+        .footer-sig {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="theme-toggle">
+            <span class="theme-toggle-icon" id="theme-icon">🌙</span>
+            <span class="theme-toggle-label" id="theme-label">DARK</span>
+        </button>
+
+        <header>
+            <h1><span class="highlight">IMAGE</span> CAPTIONER</h1>
+            <p class="subtitle">Batch AI Captions for LoRA Training <span class="zip-tag">v1.0</span></p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Sidebar - Template Settings -->
+            <aside class="sidebar">
+                <h2>Caption Template</h2>
+
+                <div class="form-group">
+                    <label>Trigger Word</label>
+                    <input type="text" id="trigger-word" value="character_name" placeholder="e.g., Kamina">
+                </div>
+
+                <div class="form-group">
+                    <label>Include in Caption</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-expression" checked>
+                        <label for="include-expression">Expression</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-pose" checked>
+                        <label for="include-pose">Pose</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-shot" checked>
+                        <label for="include-shot">Shot Type</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-angle" checked>
+                        <label for="include-angle">Camera Angle</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-lighting" checked>
+                        <label for="include-lighting">Lighting</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-background" checked>
+                        <label for="include-background">Background</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Style Tag</label>
+                    <input type="text" id="style-tag" value="anime style" placeholder="e.g., anime style, realistic">
+                </div>
+
+                <div class="form-group">
+                    <label>"Special Items"</label>
+                    <textarea id="special-items" rows="2" placeholder="e.g., red glasses, cape, sword">red glasses, cape</textarea>
+                </div>
+
+                <hr>
+
+                <h2>"Output"</h2>
+
+                <div class="form-group">
+                    <label>"Folder Path"</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="output-folder" placeholder="C:\Your\Dataset\Path" value="" style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" id="browse-folder-btn" style="padding: 10px 15px;">
+                            BROWSE
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Drop Zone -->
+                <div class="drop-zone" id="drop-zone">
+                    <div class="drop-zone-icon">📁</div>
+                    <p>Drag & Drop Images Here</p>
+                    <p style="color: var(--text-muted); font-size: 0.7rem;">or</p>
+                    <span class="browse-btn">"Browse Files"</span>
+                    <input type="file" id="file-input" multiple accept="image/*">
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">"Processing..."</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="generate-btn" disabled>
+                        "GENERATE CAPTIONS"
+                    </button>
+                    <button class="btn btn-success" id="save-btn" disabled>
+                        "SAVE CAPTIONS"
+                    </button>
+                    <button class="btn btn-danger" id="clear-btn" disabled>
+                        "CLEAR"
+                    </button>
+                </div>
+
+                <!-- Images Section -->
+                <section class="images-section" id="images-section" style="display: none;">
+                    <h2>
+                        "Gallery"
+                        <span class="image-count" id="image-count">0</span>
+                    </h2>
+                    <div class="image-grid" id="image-grid"></div>
+                </section>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Theme handling
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeLabel = document.getElementById('theme-label');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+
+        function updateThemeUI(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeLabel.textContent = '"LIGHT"';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeLabel.textContent = '"DARK"';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeUI(newTheme);
+        });
+
+        // State
+        let uploadedImages = [];
+        let captions = {};
+        let imageIndex = 0;
+
+        // Elements
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const imageGrid = document.getElementById('image-grid');
+        const imagesSection = document.getElementById('images-section');
+        const imageCount = document.getElementById('image-count');
+        const generateBtn = document.getElementById('generate-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const toast = document.getElementById('toast');
+
+        // Get template settings
+        function getTemplate() {
+            const specialItems = document.getElementById('special-items').value
+                .split(',')
+                .map(s => s.trim())
+                .filter(s => s);
+
+            return {
+                trigger_word: document.getElementById('trigger-word').value || 'character',
+                include_expression: document.getElementById('include-expression').checked,
+                include_pose: document.getElementById('include-pose').checked,
+                include_shot_type: document.getElementById('include-shot').checked,
+                include_camera_angle: document.getElementById('include-angle').checked,
+                include_lighting: document.getElementById('include-lighting').checked,
+                include_background: document.getElementById('include-background').checked,
+                style_tag: document.getElementById('style-tag').value,
+                special_items: specialItems
+            };
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            toast.textContent = '"' + message + '"';
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Update UI state
+        function updateUI() {
+            const hasImages = uploadedImages.length > 0;
+            imagesSection.style.display = hasImages ? 'block' : 'none';
+            imageCount.textContent = uploadedImages.length;
+            generateBtn.disabled = !hasImages;
+            clearBtn.disabled = !hasImages;
+
+            const hasCaptions = Object.keys(captions).length > 0;
+            saveBtn.disabled = !hasCaptions;
+        }
+
+        // Render image cards
+        function renderImages() {
+            imageGrid.innerHTML = '';
+            imageIndex = 0;
+
+            uploadedImages.forEach((img, idx) => {
+                const card = document.createElement('div');
+                card.className = 'image-card';
+                card.setAttribute('data-index', String(idx + 1).padStart(2, '0'));
+                card.innerHTML = `
+                    <img class="image-preview" src="${img.thumbnail || `/uploads/${img.filename}`}" alt="${img.filename}">
+                    <div class="image-info">
+                        <div class="image-filename">${img.filename}</div>
+                        <textarea class="caption-input"
+                            data-filename="${img.filename}"
+                            placeholder='"Caption will appear here..."'>${captions[img.filename] || ''}</textarea>
+                        <div class="caption-status status-pending" id="status-${img.filename.replace(/[^a-zA-Z0-9]/g, '_')}">
+                            ${captions[img.filename] ? '"READY"' : '"WAITING..."'}
+                        </div>
+                    </div>
+                `;
+                imageGrid.appendChild(card);
+            });
+
+            // Add event listeners for manual caption editing
+            document.querySelectorAll('.caption-input').forEach(textarea => {
+                textarea.addEventListener('input', (e) => {
+                    captions[e.target.dataset.filename] = e.target.value;
+                    updateUI();
+                });
+            });
+
+            updateUI();
+        }
+
+        // Handle file upload
+        async function handleFiles(files) {
+            const formData = new FormData();
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    formData.append('images', file);
+                }
+            });
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.uploaded) {
+                    uploadedImages = [...uploadedImages, ...data.uploaded];
+                    renderImages();
+                    showToast(`Uploaded ${data.uploaded.length} images`);
+                }
+            } catch (error) {
+                showToast('Upload failed: ' + error.message, 'error');
+            }
+        }
+
+        // Generate captions
+        async function generateCaptions() {
+            if (uploadedImages.length === 0) return;
+
+            const template = getTemplate();
+            progressContainer.classList.add('active');
+            generateBtn.disabled = true;
+
+            // Update all statuses to generating
+            uploadedImages.forEach(img => {
+                const statusId = `status-${img.filename.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                const statusEl = document.getElementById(statusId);
+                if (statusEl) {
+                    statusEl.className = 'caption-status status-generating';
+                    statusEl.textContent = '"GENERATING..."';
+                }
+            });
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        images: uploadedImages,
+                        template: template
+                    })
+                });
+
+                const data = await response.json();
+                let completed = 0;
+
+                data.results.forEach(result => {
+                    completed++;
+                    progressFill.style.width = `${(completed / uploadedImages.length) * 100}%`;
+                    progressText.textContent = `"${completed} of ${uploadedImages.length}"`;
+
+                    const statusId = `status-${result.filename.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                    const statusEl = document.getElementById(statusId);
+                    const textarea = document.querySelector(`textarea[data-filename="${result.filename}"]`);
+
+                    if (result.status === 'success') {
+                        captions[result.filename] = result.caption;
+                        if (textarea) textarea.value = result.caption;
+                        if (statusEl) {
+                            statusEl.className = 'caption-status status-success';
+                            statusEl.textContent = '"DONE"';
+                        }
+                    } else {
+                        if (statusEl) {
+                            statusEl.className = 'caption-status status-error';
+                            statusEl.textContent = `"ERROR: ${result.error}"`;
+                        }
+                    }
+                });
+
+                showToast(`Generated ${completed} captions`);
+            } catch (error) {
+                showToast('Generation failed: ' + error.message, 'error');
+            }
+
+            progressContainer.classList.remove('active');
+            progressFill.style.width = '0%';
+            generateBtn.disabled = false;
+            updateUI();
+        }
+
+        // Save captions
+        async function saveCaptions() {
+            const outputFolder = document.getElementById('output-folder').value.trim();
+
+            const captionData = uploadedImages
+                .filter(img => captions[img.filename])
+                .map(img => ({
+                    path: img.path,
+                    filename: img.filename,
+                    caption: captions[img.filename]
+                }));
+
+            try {
+                const response = await fetch('/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        captions: captionData,
+                        output_dir: outputFolder
+                    })
+                });
+
+                const data = await response.json();
+                const savedCount = data.saved.filter(s => s.status === 'saved').length;
+                showToast(`Saved ${savedCount} caption files`);
+            } catch (error) {
+                showToast('Save failed: ' + error.message, 'error');
+            }
+        }
+
+        // Clear all
+        async function clearAll() {
+            try {
+                await fetch('/clear', { method: 'POST' });
+                uploadedImages = [];
+                captions = {};
+                renderImages();
+                showToast('Cleared all images');
+            } catch (error) {
+                showToast('Clear failed: ' + error.message, 'error');
+            }
+        }
+
+        // Event listeners
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        generateBtn.addEventListener('click', generateCaptions);
+        saveBtn.addEventListener('click', saveCaptions);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Browse folder button
+        document.getElementById('browse-folder-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/browse-folder', { method: 'POST' });
+                const data = await response.json();
+                if (data.folder) {
+                    document.getElementById('output-folder').value = data.folder;
+                    showToast('Folder selected');
+                }
+            } catch (error) {
+                showToast('Failed to open folder picker', 'error');
+            }
+        });
+
+        // Initial UI state
+        updateUI();
+    </script>
+</body>
+</html>
