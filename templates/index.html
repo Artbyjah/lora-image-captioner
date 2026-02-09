@@ -256,6 +256,60 @@
             cursor: pointer;
         }
 
+        /* LoRA Type Selector */
+        .lora-type-group {
+            margin-bottom: 20px;
+        }
+
+        .lora-type-group > label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .lora-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .lora-type-btn {
+            padding: 10px 8px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .lora-type-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .lora-type-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .lora-type-hint {
+            margin-top: 8px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
         /* Divider */
         hr {
             border: none;
@@ -681,8 +735,23 @@
                     <input type="text" id="trigger-word" value="character_name" placeholder="e.g., Kamina">
                 </div>
 
+                <div class="lora-type-group">
+                    <label>LoRA Type</label>
+                    <div class="lora-type-grid">
+                        <button type="button" class="lora-type-btn active" data-type="character">Character</button>
+                        <button type="button" class="lora-type-btn" data-type="style">Style</button>
+                        <button type="button" class="lora-type-btn" data-type="object">Object</button>
+                        <button type="button" class="lora-type-btn" data-type="concept">Concept</button>
+                    </div>
+                    <div class="lora-type-hint" id="lora-type-hint">Describe everything except the subject's identity</div>
+                </div>
+
                 <div class="form-group">
                     <label>Include in Caption</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-subject" checked>
+                        <label for="include-subject">Subject</label>
+                    </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="include-expression" checked>
                         <label for="include-expression">Expression</label>
@@ -690,6 +759,10 @@
                     <div class="checkbox-group">
                         <input type="checkbox" id="include-pose" checked>
                         <label for="include-pose">Pose</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-action" checked>
+                        <label for="include-action">Action</label>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="include-shot" checked>
@@ -812,6 +885,104 @@
             updateThemeUI(newTheme);
         });
 
+        // LoRA Type Presets
+        const loraTypePresets = {
+            character: {
+                checkboxes: {
+                    'include-subject': true,
+                    'include-expression': true,
+                    'include-pose': true,
+                    'include-action': true,
+                    'include-shot': true,
+                    'include-angle': true,
+                    'include-lighting': true,
+                    'include-background': true
+                },
+                styleTag: 'anime style',
+                specialItemsPlaceholder: 'e.g., red glasses, cape, sword',
+                hint: 'Describe everything except the subject\'s identity'
+            },
+            style: {
+                checkboxes: {
+                    'include-subject': true,
+                    'include-expression': false,
+                    'include-pose': false,
+                    'include-action': true,
+                    'include-shot': true,
+                    'include-angle': true,
+                    'include-lighting': false,
+                    'include-background': true
+                },
+                styleTag: '',
+                specialItemsPlaceholder: 'e.g., recurring motifs to caption away',
+                hint: 'Describe subjects in detail, stay silent about the style'
+            },
+            object: {
+                checkboxes: {
+                    'include-subject': true,
+                    'include-expression': false,
+                    'include-pose': false,
+                    'include-action': true,
+                    'include-shot': true,
+                    'include-angle': true,
+                    'include-lighting': true,
+                    'include-background': true
+                },
+                styleTag: 'product photography',
+                specialItemsPlaceholder: 'e.g., class noun: shoe, mug, chair',
+                hint: 'Describe context and environment, not the object itself'
+            },
+            concept: {
+                checkboxes: {
+                    'include-subject': true,
+                    'include-expression': false,
+                    'include-pose': false,
+                    'include-action': true,
+                    'include-shot': true,
+                    'include-angle': true,
+                    'include-lighting': false,
+                    'include-background': true
+                },
+                styleTag: '',
+                specialItemsPlaceholder: 'e.g., concept modifiers',
+                hint: 'Describe all concrete elements, omit the abstract pattern'
+            }
+        };
+
+        // LoRA Type selector logic
+        const loraTypeBtns = document.querySelectorAll('.lora-type-btn');
+        const loraTypeHint = document.getElementById('lora-type-hint');
+
+        loraTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                loraTypeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const type = btn.dataset.type;
+                const preset = loraTypePresets[type];
+
+                // Apply checkbox presets
+                Object.entries(preset.checkboxes).forEach(([id, checked]) => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) checkbox.checked = checked;
+                });
+
+                // Update style tag
+                document.getElementById('style-tag').value = preset.styleTag;
+
+                // Update special items placeholder (clear value if switching away from character)
+                const specialItems = document.getElementById('special-items');
+                specialItems.placeholder = preset.specialItemsPlaceholder;
+                if (type !== 'character') {
+                    specialItems.value = '';
+                }
+
+                // Update hint text
+                loraTypeHint.textContent = preset.hint;
+            });
+        });
+
         // State
         let uploadedImages = [];
         let captions = {};
@@ -839,9 +1010,12 @@
                 .filter(s => s);
 
             return {
+                lora_type: document.querySelector('.lora-type-btn.active')?.dataset.type || 'character',
                 trigger_word: document.getElementById('trigger-word').value || 'character',
+                include_subject: document.getElementById('include-subject').checked,
                 include_expression: document.getElementById('include-expression').checked,
                 include_pose: document.getElementById('include-pose').checked,
+                include_action: document.getElementById('include-action').checked,
                 include_shot_type: document.getElementById('include-shot').checked,
                 include_camera_angle: document.getElementById('include-angle').checked,
                 include_lighting: document.getElementById('include-lighting').checked,
@@ -1001,6 +1175,12 @@
         async function saveCaptions() {
             const outputFolder = document.getElementById('output-folder').value.trim();
 
+            if (!outputFolder) {
+                showToast('Please set an output folder path first', 'error');
+                document.getElementById('output-folder').focus();
+                return;
+            }
+
             const captionData = uploadedImages
                 .filter(img => captions[img.filename])
                 .map(img => ({
@@ -1008,6 +1188,11 @@
                     filename: img.filename,
                     caption: captions[img.filename]
                 }));
+
+            if (captionData.length === 0) {
+                showToast('No captions to save', 'error');
+                return;
+            }
 
             try {
                 const response = await fetch('/save', {
@@ -1020,8 +1205,17 @@
                 });
 
                 const data = await response.json();
+                if (data.error) {
+                    showToast('Save failed: ' + data.error, 'error');
+                    return;
+                }
                 const savedCount = data.saved.filter(s => s.status === 'saved').length;
-                showToast(`Saved ${savedCount} caption files`);
+                const errorCount = data.saved.filter(s => s.status === 'error').length;
+                if (errorCount > 0) {
+                    showToast(`Saved ${savedCount} files, ${errorCount} failed`, 'error');
+                } else {
+                    showToast(`Saved ${savedCount} caption files to ${outputFolder}`);
+                }
             } catch (error) {
                 showToast('Save failed: ' + error.message, 'error');
             }
