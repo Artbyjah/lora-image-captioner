@@ -988,6 +988,29 @@ def save_charsheet():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/save-frames', methods=['POST'])
+def save_frames():
+    """Download selected frames as a zip file."""
+    data = request.json
+    filenames = data.get('filenames', [])
+    video_name = data.get('video_name', 'frames')
+
+    if not filenames:
+        return jsonify({'error': 'No frames selected'}), 400
+
+    # Create zip in memory
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for filename in filenames:
+            filepath = UPLOAD_FOLDER / Path(filename).name
+            if filepath.exists() and filepath.parent.resolve() == UPLOAD_FOLDER.resolve():
+                zf.write(filepath, filename)
+
+    zip_buffer.seek(0)
+    zip_name = f"{Path(video_name).stem}_frames.zip"
+    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name=zip_name)
+
+
 @app.route('/cleanup-frames', methods=['POST'])
 def cleanup_frames():
     """Delete extracted frame files that the user deselected."""

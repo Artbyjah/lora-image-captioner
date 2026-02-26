@@ -1957,6 +1957,9 @@
 
                 <div class="video-modal-actions" id="video-modal-actions" style="display:none;">
                     <button class="btn btn-secondary" id="video-modal-cancel">Cancel</button>
+                    <button class="btn btn-secondary" id="save-frames-btn" style="background:#2196F3; border-color:#2196F3; color:#fff;">
+                        SAVE FRAMES
+                    </button>
                     <button class="btn btn-success" id="add-frames-btn">
                         ADD SELECTED TO GALLERY
                     </button>
@@ -2805,6 +2808,49 @@
         document.getElementById('video-modal-cancel').addEventListener('click', closeVideoModal);
         document.getElementById('extract-btn').addEventListener('click', extractFrames);
         document.getElementById('add-frames-btn').addEventListener('click', addSelectedFramesToGallery);
+
+        document.getElementById('save-frames-btn').addEventListener('click', async () => {
+            const selected = extractedFrames.filter((_, idx) => selectedFrameIndices.has(idx));
+            if (selected.length === 0) {
+                showToast('No frames selected', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('save-frames-btn');
+            btn.disabled = true;
+            btn.textContent = 'SAVING...';
+
+            try {
+                const response = await fetch('/save-frames', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filenames: selected.map(f => f.filename),
+                        video_name: currentVideoFile ? currentVideoFile.name : 'frames'
+                    })
+                });
+
+                if (!response.ok) throw new Error('Download failed');
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = response.headers.get('Content-Disposition')?.match(/filename="?(.+?)"?$/)?.[1]
+                    || (currentVideoFile ? currentVideoFile.name.replace(/\.[^.]+$/, '') + '_frames.zip' : 'frames.zip');
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+
+                showToast(`Saved ${selected.length} frames as zip`);
+            } catch (err) {
+                showToast('Failed to save frames: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'SAVE FRAMES';
+            }
+        });
 
         document.getElementById('select-all-frames').addEventListener('click', () => {
             selectedFrameIndices = new Set(extractedFrames.map((_, i) => i));
