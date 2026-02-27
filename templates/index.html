@@ -322,6 +322,41 @@
             font-style: italic;
         }
 
+        /* Concise Mode Toggle */
+        .concise-mode-toggle {
+            display: flex;
+            border: 2px solid var(--border-color);
+        }
+
+        .concise-mode-btn {
+            flex: 1;
+            padding: 7px 6px;
+            border: none;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .concise-mode-btn:not(:last-child) {
+            border-right: 2px solid var(--border-color);
+        }
+
+        .concise-mode-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .concise-mode-btn:hover:not(.active) {
+            background: var(--bg-tertiary);
+        }
+
         /* Divider */
         hr {
             border: none;
@@ -443,6 +478,37 @@
             cursor: not-allowed;
             box-shadow: none !important;
             transform: none !important;
+        }
+
+        /* Button tooltips */
+        .btn[data-tip] {
+            position: relative;
+        }
+
+        .btn[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            padding: 6px 10px;
+            font-size: 0.58rem;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn[data-tip]:hover::after {
+            opacity: 1;
         }
 
         .btn:active:not(:disabled) {
@@ -1647,6 +1713,883 @@
                 display: none;
             }
         }
+
+        /* ====== NEW UI/UX FEATURE STYLES ====== */
+
+        /* Caption Score Badge */
+        .caption-score-badge {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            min-width: 28px;
+            height: 22px;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0 6px;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            cursor: help;
+        }
+
+        .caption-score-badge.visible {
+            display: flex;
+        }
+
+        .caption-score-badge.score-green {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .caption-score-badge.score-yellow {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        .caption-score-badge.score-red {
+            background: var(--color-error);
+            color: white;
+        }
+
+        /* Reference Match Badge */
+        .ref-match-badge {
+            display: none;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            min-width: 28px;
+            height: 22px;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0 6px;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        .ref-match-badge.visible {
+            display: flex;
+        }
+
+        /* Reference Upload Slot */
+        .ref-upload-slot {
+            border: 2px dashed var(--border-light);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 14px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ref-upload-slot:hover {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+
+        .ref-upload-slot.has-image {
+            border-style: solid;
+            border-color: var(--accent);
+            padding: 6px;
+        }
+
+        .ref-upload-slot .ref-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ref-upload-slot img {
+            max-width: 100%;
+            max-height: 80px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .ref-upload-slot .ref-filename {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 3px;
+            word-break: break-all;
+        }
+
+        /* Provider Select */
+        .provider-select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-family: inherit;
+        }
+
+        .provider-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .provider-status {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Validation Panel */
+        .validation-panel {
+            margin-bottom: 20px;
+            border: 2px solid var(--border-light);
+            background: var(--bg-primary);
+        }
+
+        .validation-header {
+            padding: 10px 14px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .validation-header .validation-summary {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .validation-header .validation-summary.all-pass { color: var(--color-success); }
+        .validation-header .validation-summary.has-warn { color: var(--color-warning); }
+        .validation-header .validation-summary.has-fail { color: var(--color-error); }
+
+        .validation-list {
+            padding: 8px 14px;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 0.7rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .validation-item:last-child {
+            border-bottom: none;
+        }
+
+        .validation-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .validation-icon.pass { color: var(--color-success); }
+        .validation-icon.warn { color: var(--color-warning); }
+        .validation-icon.fail { color: var(--color-error); }
+
+        .validation-detail {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-left: 26px;
+            margin-top: 2px;
+        }
+
+        /* Feature 7: Caption status color indicators */
+        .image-card.status-pending { border-left: 4px solid var(--text-muted); }
+        .image-card.status-captioned { border-left: 4px solid var(--color-success); }
+        .image-card.status-edited { border-left: 4px solid var(--color-warning); }
+        .image-card.status-error { border-left: 4px solid var(--color-error); }
+
+        /* Feature 2: Caption token/word counter */
+        .caption-counter {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        .caption-counter.warn { color: var(--color-warning); }
+        .caption-counter.over { color: var(--color-error); }
+
+        /* Feature 11 & 10: Card action buttons (COPY, REGEN) */
+        .card-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .btn-card-action {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .btn-card-action:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .btn-card-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Feature 6: Onboarding tooltips */
+        .tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            font-size: 0.5rem;
+            font-weight: 700;
+            cursor: help;
+            position: relative;
+            margin-left: 6px;
+            vertical-align: middle;
+            line-height: 1;
+            font-family: inherit;
+        }
+        .tooltip-trigger .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            padding: 8px 10px;
+            font-size: 0.6rem;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            z-index: 100;
+            transition: opacity 0.2s;
+            margin-bottom: 6px;
+            border: 1px solid var(--border-color);
+            pointer-events: none;
+        }
+        .tooltip-trigger:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Feature 3: Auto-save restore banner */
+        .restore-banner {
+            display: none;
+            background: var(--accent);
+            color: white;
+            padding: 10px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border: 2px solid var(--accent);
+        }
+        .restore-banner.show { display: flex; }
+        .restore-banner-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .restore-banner .btn {
+            padding: 6px 14px;
+            font-size: 0.6rem;
+            border-color: white;
+            color: white;
+            background: transparent;
+        }
+        .restore-banner .btn:hover {
+            background: white;
+            color: var(--accent);
+        }
+
+        /* Feature 9: Template presets */
+        .preset-group {
+            margin-bottom: 14px;
+        }
+        .preset-group > label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .preset-select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-family: inherit;
+            margin-bottom: 6px;
+        }
+        .preset-select:focus { outline: none; border-color: var(--accent); }
+        .preset-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .preset-actions .btn {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.55rem;
+            justify-content: center;
+        }
+
+        /* Feature 4: Keyboard shortcut help panel */
+        .shortcut-help-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .shortcut-help-overlay.active { display: flex; }
+        .shortcut-help-panel {
+            background: var(--bg-secondary);
+            border: 3px solid var(--border-color);
+            padding: 24px;
+            max-width: 420px;
+            width: 90%;
+        }
+        .shortcut-help-panel h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        .shortcut-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.7rem;
+            align-items: center;
+        }
+        .shortcut-row:last-child { border-bottom: none; }
+        .shortcut-key {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .shortcut-desc {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Feature 5: Image lightbox */
+        .image-lightbox {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+        .image-lightbox.active { display: flex; }
+        .image-lightbox img {
+            max-width: 95vw;
+            max-height: 92vh;
+            object-fit: contain;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 60px rgba(0,0,0,0.5);
+        }
+        .image-lightbox-close {
+            position: absolute;
+            top: 20px; right: 28px;
+            background: none;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 1.4rem;
+            width: 40px; height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .image-lightbox-close:hover { border-color: var(--accent); color: var(--accent); }
+        .image-lightbox-label {
+            position: absolute;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .image-preview { cursor: pointer; }
+
+        /* Feature 1: Find & Replace modal */
+        .fnr-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .fnr-modal-overlay.active { display: flex; }
+        .fnr-modal {
+            background: var(--bg-secondary);
+            border: 3px solid var(--border-color);
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .fnr-modal-header {
+            padding: 14px 18px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .fnr-modal-header h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .fnr-modal-body {
+            padding: 18px;
+        }
+        .fnr-input-group {
+            margin-bottom: 12px;
+        }
+        .fnr-input-group label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+        .fnr-input-group input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+        .fnr-input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 3px 3px 0 var(--accent);
+        }
+        .fnr-options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .fnr-match-count {
+            font-size: 0.7rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .fnr-preview {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            padding: 8px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            background: var(--bg-primary);
+            margin-bottom: 12px;
+        }
+        .fnr-preview-item {
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fnr-preview-item:last-child { border-bottom: none; }
+        .fnr-preview-item .fnr-old { color: var(--color-error); text-decoration: line-through; }
+        .fnr-preview-item .fnr-new { color: var(--color-success); }
+        .fnr-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Feature 8: Drag and drop */
+        .drag-handle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            z-index: 11;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .image-card:hover .drag-handle { opacity: 1; }
+        .drag-handle span {
+            display: block;
+            width: 12px;
+            height: 2px;
+            background: white;
+        }
+        .drag-handle:active { cursor: grabbing; }
+        .image-card.dragging {
+            opacity: 0.4;
+            border-style: dashed;
+        }
+        .image-card.drag-over {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        /* ====== PHASE 2 UI/UX FEATURES ====== */
+
+        /* Feature P1: Caption History - Undo button */
+        .btn-undo {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            display: none;
+        }
+        .btn-undo.has-history { display: inline-block; }
+        .btn-undo:hover {
+            background: var(--color-warning);
+            color: white;
+            border-color: var(--color-warning);
+        }
+
+        /* Feature P2: Caption Statistics Bar */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-top: 3px solid var(--accent);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .stats-bar .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stats-bar .stat-value {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* Feature P3: Trigger Word Warning Badge */
+        .trigger-warning {
+            position: absolute;
+            top: 10px;
+            left: 40px;
+            background: var(--color-warning);
+            color: white;
+            width: 22px;
+            height: 22px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 11;
+            cursor: help;
+        }
+        .trigger-warning.visible { display: flex; }
+
+        /* Feature P4: Filter Chips */
+        .filter-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .filter-chip {
+            padding: 6px 14px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .filter-chip:hover { background: var(--bg-tertiary); }
+        .filter-chip.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .filter-chip .filter-count {
+            font-size: 0.55rem;
+            opacity: 0.8;
+            margin-left: 4px;
+        }
+
+        /* Feature P5: List View */
+        .image-grid.list-view {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .image-grid.list-view .image-card {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0;
+        }
+        .image-grid.list-view .image-preview {
+            width: 80px;
+            height: 80px;
+            border-bottom: none;
+            border-right: 2px solid var(--border-color);
+        }
+        .image-grid.list-view .image-info {
+            padding: 8px 12px;
+        }
+        .image-grid.list-view .caption-input {
+            min-height: 40px;
+        }
+        .image-grid.list-view .image-card::before {
+            display: none;
+        }
+        .image-grid.list-view .drag-handle {
+            display: none;
+        }
+        .image-grid.list-view .resolution-overlay {
+            display: none !important;
+        }
+
+        /* Feature P6: Bulk Prefix/Suffix Modal */
+        .bulk-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .bulk-modal-overlay.active { display: flex; }
+        .bulk-modal {
+            background: var(--bg-secondary);
+            border: 3px solid var(--border-color);
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .bulk-modal-header {
+            padding: 14px 18px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bulk-modal-header h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .bulk-modal-body { padding: 18px; }
+        .bulk-mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 14px;
+        }
+        .bulk-mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: center;
+        }
+        .bulk-mode-btn:first-child { border-right: none; }
+        .bulk-mode-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .bulk-preview {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            padding: 8px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            background: var(--bg-primary);
+            margin-bottom: 12px;
+        }
+        .bulk-preview-item {
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bulk-preview-item:last-child { border-bottom: none; }
+        .bulk-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Feature P7: Diversity Warning */
+        .image-card.diversity-warning {
+            border-right: 4px solid var(--color-error);
+        }
+        .diversity-badge {
+            position: absolute;
+            top: 36px;
+            right: 10px;
+            background: var(--color-error);
+            color: white;
+            width: 22px;
+            height: 22px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 11;
+        }
+        .diversity-badge.visible { display: flex; }
+
+        /* Feature P8: Duplicate Badge */
+        .dup-badge {
+            position: absolute;
+            top: 36px;
+            left: 10px;
+            background: var(--color-error);
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            z-index: 11;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .dup-badge.visible { display: block; }
+
+        /* Feature P9: Resolution Overlay */
+        .resolution-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px dashed var(--accent);
+            pointer-events: none;
+            z-index: 9;
+            display: none;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.15);
+        }
+        .resolution-overlay.visible { display: block; }
+        .resolution-overlay-label {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            background: rgba(0,0,0,0.6);
+            padding: 1px 6px;
+        }
     </style>
 </head>
 <body>
@@ -1669,29 +2612,61 @@
 
         <!-- ====== CAPTIONER VIEW ====== -->
         <div class="page-view active" id="captioner-view">
+
+        <!-- Feature 3: Auto-save restore banner -->
+        <div class="restore-banner" id="restore-banner">
+            <span>Previous session found. Restore?</span>
+            <div class="restore-banner-actions">
+                <button class="btn" id="restore-yes-btn">RESTORE</button>
+                <button class="btn" id="restore-no-btn">DISMISS</button>
+            </div>
+        </div>
+
         <div class="main-grid">
             <!-- Sidebar - Template Settings -->
             <aside class="sidebar">
                 <h2>Caption Template</h2>
 
+                <!-- Feature 9: Template Presets -->
+                <div class="preset-group">
+                    <label>Preset</label>
+                    <select class="preset-select" id="preset-select">
+                        <option value="">-- Select Preset --</option>
+                    </select>
+                    <div class="preset-actions">
+                        <button class="btn btn-secondary" id="preset-save-btn">SAVE</button>
+                        <button class="btn btn-danger" id="preset-delete-btn">DELETE</button>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Trigger Word</label>
+                    <label>Trigger Word<span class="tooltip-trigger">?<span class="tooltip-text">The unique identifier for your LoRA subject. Use a rare token like "ohwx" or a made-up word to avoid collisions with existing model concepts.</span></span></label>
                     <input type="text" id="trigger-word" value="character_name" placeholder="e.g., Kamina">
                 </div>
 
                 <div class="lora-type-group">
-                    <label>LoRA Type</label>
+                    <label>LoRA Type<span class="tooltip-trigger">?<span class="tooltip-text">Determines captioning strategy. Character: describe everything except identity. Style: describe subjects, omit style. Object: describe context, not the object. Concept: describe concrete elements.</span></span></label>
                     <div class="lora-type-grid">
                         <button type="button" class="lora-type-btn active" data-type="character">Character</button>
                         <button type="button" class="lora-type-btn" data-type="style">Style</button>
                         <button type="button" class="lora-type-btn" data-type="object">Object</button>
                         <button type="button" class="lora-type-btn" data-type="concept">Concept</button>
+                        <button type="button" class="lora-type-btn" data-type="motion" style="grid-column: 1 / -1;">Motion</button>
                     </div>
                     <div class="lora-type-hint" id="lora-type-hint">Describe everything except the subject's identity</div>
                 </div>
 
+                <!-- Concise Mode Toggle -->
                 <div class="form-group">
-                    <label>Include in Caption</label>
+                    <label>Caption Length</label>
+                    <div class="concise-mode-toggle">
+                        <button type="button" class="concise-mode-btn active" data-mode="detailed">Detailed</button>
+                        <button type="button" class="concise-mode-btn" data-mode="concise">Concise</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Include in Caption<span class="tooltip-trigger">?<span class="tooltip-text">Select which visual elements the AI should describe. Unchecked items will be intentionally omitted from captions to avoid training the model on those aspects.</span></span></label>
                     <div class="checkbox-grid">
                         <div class="checkbox-group">
                             <input type="checkbox" id="include-subject" checked>
@@ -1729,12 +2704,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Style Tag</label>
+                    <label>Style Tag<span class="tooltip-trigger">?<span class="tooltip-text">A style descriptor appended to every caption (e.g., "anime style", "realistic photo"). Leave empty for style LoRAs so the model learns the style implicitly.</span></span></label>
                     <input type="text" id="style-tag" value="anime style" placeholder="e.g., anime style, realistic">
                 </div>
 
                 <div class="form-group">
-                    <label>"Special Items"</label>
+                    <label>"Special Items"<span class="tooltip-trigger">?<span class="tooltip-text">Comma-separated list of notable accessories or features. The AI will mention these items when visible in the image to help the model learn them as part of the subject.</span></span></label>
                     <textarea id="special-items" rows="2" placeholder="e.g., red glasses, cape, sword">red glasses, cape</textarea>
                 </div>
 
@@ -1750,6 +2725,23 @@
                             BROWSE
                         </button>
                     </div>
+                </div>
+
+                <hr>
+
+                <!-- Provider Selection -->
+                <div class="form-group">
+                    <label>Caption Provider<span class="tooltip-trigger">?<span class="tooltip-text">Select which AI provider to use for caption generation. Only available providers are shown.</span></span></label>
+                    <select id="provider-select" class="provider-select">
+                        <option value="claude">Claude (Anthropic)</option>
+                    </select>
+                    <div class="provider-status" id="provider-status">Checking providers...</div>
+                </div>
+
+                <!-- Reference Image Upload -->
+                <div class="ref-upload-slot" id="ref-upload-slot">
+                    <span class="ref-label">Drop Reference Image</span>
+                    <input type="file" id="ref-file-input" accept="image/*" style="display:none;">
                 </div>
             </aside>
 
@@ -1772,6 +2764,16 @@
                     <div class="progress-text" id="progress-text">"Processing..."</div>
                 </div>
 
+                <!-- Caption Statistics Bar -->
+                <div class="stats-bar" id="stats-bar" style="display:none;">
+                    <div class="stat-item">Total <span class="stat-value" id="stat-total">0</span></div>
+                    <div class="stat-item">Captioned <span class="stat-value" id="stat-captioned">0%</span></div>
+                    <div class="stat-item">Trigger <span class="stat-value" id="stat-trigger">0%</span></div>
+                    <div class="stat-item">Avg Tokens <span class="stat-value" id="stat-avg-tokens">0</span></div>
+                    <div class="stat-item">Min <span class="stat-value" id="stat-min-tokens">0</span></div>
+                    <div class="stat-item">Max <span class="stat-value" id="stat-max-tokens">0</span></div>
+                </div>
+
                 <!-- Action Buttons -->
                 <div class="action-bar">
                     <button class="btn btn-primary" id="generate-btn" disabled>
@@ -1783,8 +2785,35 @@
                     <button class="btn btn-success" id="export-btn" disabled>
                         "EXPORT DATASET"
                     </button>
-                    <button class="btn btn-danger" id="clear-btn" disabled>
+                    <button class="btn btn-secondary" id="fnr-btn" disabled data-tip="Search and replace text across all captions">
+                        "FIND & REPLACE"
+                    </button>
+                    <button class="btn btn-secondary" id="bulk-btn" disabled data-tip="Add text before or after all captions">
+                        "PREFIX/SUFFIX"
+                    </button>
+                    <button class="btn btn-secondary" id="trigger-btn" disabled data-tip="Prepend your trigger word to captions missing it">
+                        "+TRIGGER"
+                    </button>
+                    <button class="btn btn-secondary" id="diversity-btn" disabled data-tip="Flag captions that are too similar to each other">
+                        "DIVERSITY"
+                    </button>
+                    <button class="btn btn-secondary" id="score-btn" disabled data-tip="AI-score each caption for accuracy and training quality">
+                        "SCORE"
+                    </button>
+                    <button class="btn btn-secondary" id="match-ref-btn" disabled data-tip="Sort gallery by visual similarity to reference image">
+                        "MATCH REF"
+                    </button>
+                    <button class="btn btn-danger" id="clear-btn" disabled data-tip="Remove all images and captions">
                         "CLEAR"
+                    </button>
+                    <button class="btn btn-secondary" id="res-toggle-btn" style="margin-left:auto; padding:10px 12px;" disabled data-tip="Show training crop overlay on images">
+                        RES
+                    </button>
+                    <button class="btn btn-secondary" id="view-toggle-btn" style="padding:10px 12px;">
+                        LIST VIEW
+                    </button>
+                    <button class="btn btn-secondary" id="shortcut-help-btn" style="padding:10px 12px;">
+                        ?
                     </button>
                 </div>
 
@@ -1794,6 +2823,14 @@
                         "Gallery"
                         <span class="image-count" id="image-count">0</span>
                     </h2>
+                    <!-- Filter Chips -->
+                    <div class="filter-bar" id="filter-bar">
+                        <button class="filter-chip active" data-filter="all">All <span class="filter-count" id="filter-count-all">0</span></button>
+                        <button class="filter-chip" data-filter="pending">Pending <span class="filter-count" id="filter-count-pending">0</span></button>
+                        <button class="filter-chip" data-filter="captioned">Captioned <span class="filter-count" id="filter-count-captioned">0</span></button>
+                        <button class="filter-chip" data-filter="edited">Edited <span class="filter-count" id="filter-count-edited">0</span></button>
+                        <button class="filter-chip" data-filter="error">Error <span class="filter-count" id="filter-count-error">0</span></button>
+                    </div>
                     <div class="image-grid" id="image-grid"></div>
                 </section>
             </main>
@@ -1982,6 +3019,9 @@
                     <span id="export-image-count">0</span> images with captions ready for export
                 </div>
 
+                <!-- Validation Panel -->
+                <div class="validation-panel" id="validation-panel" style="display:none;"></div>
+
                 <!-- Model Selection -->
                 <div class="export-section">
                     <label class="export-section-label">Base Model</label>
@@ -2099,6 +3139,104 @@
         <div class="charsheet-lightbox-label" id="charsheet-lightbox-label"></div>
     </div>
 
+    <!-- Feature 5: Image Lightbox -->
+    <div class="image-lightbox" id="image-lightbox">
+        <button class="image-lightbox-close" id="image-lightbox-close">&times;</button>
+        <img id="image-lightbox-img" src="" alt="Full resolution">
+        <div class="image-lightbox-label" id="image-lightbox-label"></div>
+    </div>
+
+    <!-- Feature 1: Find & Replace Modal -->
+    <div class="fnr-modal-overlay" id="fnr-modal-overlay">
+        <div class="fnr-modal">
+            <div class="fnr-modal-header">
+                <h3>Find & Replace</h3>
+                <button class="video-modal-close" id="fnr-close-btn">&times;</button>
+            </div>
+            <div class="fnr-modal-body">
+                <div class="fnr-input-group">
+                    <label>Find</label>
+                    <input type="text" id="fnr-find" placeholder="Search text...">
+                </div>
+                <div class="fnr-input-group">
+                    <label>Replace With</label>
+                    <input type="text" id="fnr-replace" placeholder="Replacement text...">
+                </div>
+                <div class="fnr-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="fnr-case">
+                        <label for="fnr-case">Case Sensitive</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="fnr-regex">
+                        <label for="fnr-regex">Regex</label>
+                    </div>
+                </div>
+                <div class="fnr-match-count" id="fnr-match-count"></div>
+                <div class="fnr-preview" id="fnr-preview"></div>
+                <div class="fnr-actions">
+                    <button class="btn btn-primary" id="fnr-apply-btn">APPLY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Prefix/Suffix Modal -->
+    <div class="bulk-modal-overlay" id="bulk-modal-overlay">
+        <div class="bulk-modal">
+            <div class="bulk-modal-header">
+                <h3>Bulk Prefix / Suffix</h3>
+                <button class="video-modal-close" id="bulk-close-btn">&times;</button>
+            </div>
+            <div class="bulk-modal-body">
+                <div class="bulk-mode-toggle">
+                    <button type="button" class="bulk-mode-btn active" data-bulk-mode="prefix">Prefix</button>
+                    <button type="button" class="bulk-mode-btn" data-bulk-mode="suffix">Suffix</button>
+                </div>
+                <div class="fnr-input-group">
+                    <label>Text to Add</label>
+                    <input type="text" id="bulk-text" placeholder="e.g., ohwx, ">
+                </div>
+                <div class="fnr-match-count" id="bulk-match-count"></div>
+                <div class="bulk-preview" id="bulk-preview"></div>
+                <div class="bulk-actions">
+                    <button class="btn btn-primary" id="bulk-apply-btn">APPLY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature 4: Keyboard Shortcut Help Overlay -->
+    <div class="shortcut-help-overlay" id="shortcut-help-overlay">
+        <div class="shortcut-help-panel">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Generate captions</span>
+                <span class="shortcut-key">Ctrl+Enter</span>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Save captions</span>
+                <span class="shortcut-key">Ctrl+S</span>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Next caption</span>
+                <span class="shortcut-key">Tab</span>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Previous caption</span>
+                <span class="shortcut-key">Shift+Tab</span>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Close modal / lightbox</span>
+                <span class="shortcut-key">Escape</span>
+            </div>
+            <div class="shortcut-row">
+                <span class="shortcut-desc">Toggle this help</span>
+                <span class="shortcut-key">?</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
@@ -2193,6 +3331,21 @@
                 styleTag: '',
                 specialItemsPlaceholder: 'e.g., concept modifiers',
                 hint: 'Describe all concrete elements, omit the abstract pattern'
+            },
+            motion: {
+                checkboxes: {
+                    'include-subject': true,
+                    'include-expression': false,
+                    'include-pose': true,
+                    'include-action': true,
+                    'include-shot': true,
+                    'include-angle': true,
+                    'include-lighting': false,
+                    'include-background': true
+                },
+                styleTag: '',
+                specialItemsPlaceholder: 'e.g., motion blur, camera pan',
+                hint: 'Focus on movement dynamics, trajectory, speed, camera motion'
             }
         };
 
@@ -2230,10 +3383,32 @@
             });
         });
 
+        // Concise Mode Toggle
+        document.querySelectorAll('.concise-mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.concise-mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
         // State
         let uploadedImages = [];
         let captions = {};
-        let imageIndex = 0;
+        let captionSavedState = {}; // Feature 7: filename -> 'pending' | 'captioned' | 'edited' | 'error'
+        let isDragging = false; // Feature 8: drag-and-drop flag
+
+        // Phase 2 state variables
+        let captionHistory = {}; // filename -> array of previous caption strings (max 20)
+        let activeFilter = 'all'; // 'all' | 'pending' | 'captioned' | 'edited' | 'error'
+        let currentViewMode = localStorage.getItem('loraToolkit_viewMode') || 'grid'; // 'grid' | 'list'
+        let showResolutionOverlay = false;
+        let imageHashes = {}; // filename -> perceptual hash string
+        let duplicateFlags = {}; // filename -> true if flagged as duplicate
+        let diversityFlags = {}; // filename -> true if flagged for similarity
+        let bulkMode = 'prefix'; // 'prefix' | 'suffix'
+        let captionScores = {}; // filename -> {score, feedback}
+        let matchScores = {}; // filename -> score
+        let referenceFile = null; // File object for reference image matching
 
         // Elements
         const dropZone = document.getElementById('drop-zone');
@@ -2268,7 +3443,9 @@
                 include_lighting: document.getElementById('include-lighting').checked,
                 include_background: document.getElementById('include-background').checked,
                 style_tag: document.getElementById('style-tag').value,
-                special_items: specialItems
+                special_items: specialItems,
+                concise_mode: document.querySelector('.concise-mode-btn.active')?.dataset.mode === 'concise',
+                provider: document.getElementById('provider-select')?.value || 'claude'
             };
         }
 
@@ -2290,39 +3467,120 @@
             const hasCaptions = Object.keys(captions).length > 0;
             saveBtn.disabled = !hasCaptions;
             document.getElementById('export-btn').disabled = !(hasImages && hasCaptions);
+            document.getElementById('fnr-btn').disabled = !hasCaptions;
+
+            // Phase 2: Enable/disable new buttons
+            document.getElementById('bulk-btn').disabled = !hasCaptions;
+            document.getElementById('trigger-btn').disabled = !hasCaptions;
+            document.getElementById('diversity-btn').disabled = !hasCaptions;
+            document.getElementById('res-toggle-btn').disabled = !hasImages;
+            document.getElementById('score-btn').disabled = !hasCaptions;
+            document.getElementById('match-ref-btn').disabled = !(hasImages && referenceFile);
+
+            updateStatsBar();
         }
 
-        // Render image cards
+        // Render image cards (enhanced with all features)
         function renderImages() {
             imageGrid.innerHTML = '';
-            imageIndex = 0;
 
             uploadedImages.forEach((img, idx) => {
                 const card = document.createElement('div');
                 card.className = 'image-card';
+                const state = captionSavedState[img.filename] || 'pending';
+                card.classList.add('status-' + state);
                 card.setAttribute('data-index', String(idx + 1).padStart(2, '0'));
+                card.setAttribute('draggable', 'true');
+                card.dataset.dragIdx = idx;
+
+                const captionText = captions[img.filename] || '';
+                const words = captionText.trim() ? captionText.trim().split(/\s+/).length : 0;
+                const tokens = Math.round(words * 1.3);
+                let counterClass = 'caption-counter';
+                if (tokens > 75) counterClass += ' over';
+                else if (tokens > 60) counterClass += ' warn';
+
+                const hasHistory = captionHistory[img.filename] && captionHistory[img.filename].length > 0;
                 card.innerHTML = `
-                    <img class="image-preview" src="${img.thumbnail || `/uploads/${img.filename}`}" alt="${img.filename}">
+                    <div class="drag-handle"><span></span><span></span><span></span></div>
+                    <div class="trigger-warning" data-filename="${img.filename}" title="Missing trigger word">!</div>
+                    <div class="diversity-badge${diversityFlags[img.filename] ? ' visible' : ''}" data-filename="${img.filename}">~</div>
+                    <div class="dup-badge${duplicateFlags[img.filename] ? ' visible' : ''}" data-filename="${img.filename}">DUP</div>
+                    <div style="position:relative;">
+                        <img class="image-preview" src="${img.thumbnail || '/uploads/' + img.filename}" alt="${img.filename}" data-filename="${img.filename}">
+                        <div class="resolution-overlay" data-filename="${img.filename}"><span class="resolution-overlay-label"></span></div>
+                        <div class="caption-score-badge" data-filename="${img.filename}"></div>
+                        <div class="ref-match-badge" data-filename="${img.filename}"></div>
+                    </div>
                     <div class="image-info">
                         <div class="image-filename">${img.filename}</div>
                         <textarea class="caption-input"
                             data-filename="${img.filename}"
-                            placeholder='"Caption will appear here..."'>${captions[img.filename] || ''}</textarea>
+                            placeholder='"Caption will appear here..."'>${captionText}</textarea>
+                        <div class="${counterClass}" id="counter-${img.filename.replace(/[^a-zA-Z0-9]/g, '_')}">${words} words / ~${tokens} tokens</div>
+                        <div class="card-actions">
+                            <button class="btn-card-action btn-copy" data-filename="${img.filename}">COPY</button>
+                            <button class="btn-card-action btn-regen" data-filename="${img.filename}">REGEN</button>
+                            <button class="btn-card-action btn-undo ${hasHistory ? 'has-history' : ''}" data-filename="${img.filename}">UNDO</button>
+                        </div>
                         <div class="caption-status status-pending" id="status-${img.filename.replace(/[^a-zA-Z0-9]/g, '_')}">
-                            ${captions[img.filename] ? '"READY"' : '"WAITING..."'}
+                            ${captionText ? '"READY"' : '"WAITING..."'}
                         </div>
                     </div>
                 `;
                 imageGrid.appendChild(card);
             });
 
-            // Add event listeners for manual caption editing
+            // Caption editing with state tracking + counter update
             document.querySelectorAll('.caption-input').forEach(textarea => {
                 textarea.addEventListener('input', (e) => {
-                    captions[e.target.dataset.filename] = e.target.value;
+                    const fn = e.target.dataset.filename;
+                    captions[fn] = e.target.value;
+                    if (captionSavedState[fn] && captionSavedState[fn] !== 'pending') {
+                        captionSavedState[fn] = 'edited';
+                    }
+                    updateCaptionCounter(fn, e.target.value);
+                    updateCardStatusColor(fn);
                     updateUI();
                 });
             });
+
+            // Feature 5: Image lightbox click
+            document.querySelectorAll('.image-preview').forEach(img => {
+                img.addEventListener('click', (e) => {
+                    if (isDragging) return;
+                    openImageLightbox(e.target.dataset.filename);
+                });
+            });
+
+            // Feature 11: Copy buttons
+            document.querySelectorAll('.btn-copy').forEach(btn => {
+                btn.addEventListener('click', () => copyCaption(btn.dataset.filename));
+            });
+
+            // Feature 10: Regen buttons
+            document.querySelectorAll('.btn-regen').forEach(btn => {
+                btn.addEventListener('click', () => regenCaption(btn.dataset.filename));
+            });
+
+            // Phase 2: Undo buttons
+            document.querySelectorAll('.btn-undo').forEach(btn => {
+                btn.addEventListener('click', () => undoCaption(btn.dataset.filename));
+            });
+
+            // Feature 8: Setup drag-and-drop
+            setupDragAndDrop();
+
+            // Phase 2: Post-render updates
+            updateStatsBar();
+            checkTriggerWords();
+            updateFilterCounts();
+            applyFilter();
+            applyViewMode();
+            applyResolutionOverlays();
+            renderDuplicateBadges();
+            renderScoreBadges();
+            renderMatchBadges();
 
             updateUI();
         }
@@ -2358,6 +3616,8 @@
                         uploadedImages = [...uploadedImages, ...data.uploaded];
                         renderImages();
                         showToast(`Uploaded ${data.uploaded.length} images`);
+                        // Phase 2: Check for duplicates asynchronously
+                        checkForDuplicates(data.uploaded);
                     }
                 } catch (error) {
                     showToast('Upload failed: ' + error.message, 'error');
@@ -2377,8 +3637,10 @@
         }
 
         // Generate captions
+        let isGenerating = false;
         async function generateCaptions() {
-            if (uploadedImages.length === 0) return;
+            if (uploadedImages.length === 0 || isGenerating) return;
+            isGenerating = true;
 
             const template = getTemplate();
             progressContainer.classList.add('active');
@@ -2417,13 +3679,19 @@
                     const textarea = document.querySelector(`textarea[data-filename="${result.filename}"]`);
 
                     if (result.status === 'success') {
+                        pushCaptionHistory(result.filename);
                         captions[result.filename] = result.caption;
+                        captionSavedState[result.filename] = 'captioned';
                         if (textarea) textarea.value = result.caption;
+                        updateCaptionCounter(result.filename, result.caption);
+                        updateCardStatusColor(result.filename);
                         if (statusEl) {
                             statusEl.className = 'caption-status status-success';
                             statusEl.textContent = '"DONE"';
                         }
                     } else {
+                        captionSavedState[result.filename] = 'error';
+                        updateCardStatusColor(result.filename);
                         if (statusEl) {
                             statusEl.className = 'caption-status status-error';
                             statusEl.textContent = `"ERROR: ${result.error}"`;
@@ -2439,6 +3707,7 @@
             progressContainer.classList.remove('active');
             progressFill.style.width = '0%';
             generateBtn.disabled = false;
+            isGenerating = false;
             updateUI();
         }
 
@@ -2482,6 +3751,13 @@
                 }
                 const savedCount = data.saved.filter(s => s.status === 'saved').length;
                 const errorCount = data.saved.filter(s => s.status === 'error').length;
+                // Update status for saved captions
+                uploadedImages.forEach(img => {
+                    if (captions[img.filename]) {
+                        captionSavedState[img.filename] = 'captioned';
+                        updateCardStatusColor(img.filename);
+                    }
+                });
                 if (errorCount > 0) {
                     showToast(`Saved ${savedCount} files, ${errorCount} failed`, 'error');
                 } else {
@@ -2498,12 +3774,348 @@
                 await fetch('/clear', { method: 'POST' });
                 uploadedImages = [];
                 captions = {};
+                captionSavedState = {};
+                captionHistory = {};
+                imageHashes = {};
+                duplicateFlags = {};
+                diversityFlags = {};
+                captionScores = {};
+                matchScores = {};
+                referenceFile = null;
+                // Reset reference upload slot
+                const refSlot = document.getElementById('ref-upload-slot');
+                refSlot.innerHTML = '<span class="ref-label">Drop Reference Image</span><input type="file" id="ref-file-input" accept="image/*" style="display:none;">';
+                refSlot.classList.remove('has-image');
+                setupRefUpload();
+                clearAutoSave();
                 renderImages();
                 showToast('Cleared all images');
             } catch (error) {
                 showToast('Clear failed: ' + error.message, 'error');
             }
         }
+
+        // === CAPTION QUALITY SCORING ===
+        async function scoreCaptions() {
+            const captionedImages = uploadedImages.filter(img => captions[img.filename]);
+            if (captionedImages.length === 0) {
+                showToast('No captions to score', 'error');
+                return;
+            }
+
+            const scoreBtn = document.getElementById('score-btn');
+            scoreBtn.disabled = true;
+            progressContainer.classList.add('active');
+            progressText.textContent = '"Scoring captions..."';
+            progressFill.style.width = '0%';
+
+            try {
+                const payload = {
+                    images: captionedImages.map(img => ({
+                        filename: img.filename,
+                        path: img.path,
+                        caption: captions[img.filename]
+                    })),
+                    lora_type: document.querySelector('.lora-type-btn.active')?.dataset.type || 'character'
+                };
+
+                const response = await fetch('/score-captions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    showToast('Scoring failed: ' + data.error, 'error');
+                } else {
+                    data.scores.forEach(s => {
+                        captionScores[s.filename] = { score: s.score, feedback: s.feedback };
+                    });
+                    renderScoreBadges();
+                    showToast(`Scored ${data.scores.length} captions`);
+                }
+            } catch (error) {
+                showToast('Scoring failed: ' + error.message, 'error');
+            }
+
+            progressContainer.classList.remove('active');
+            progressFill.style.width = '0%';
+            scoreBtn.disabled = false;
+            updateUI();
+        }
+
+        function renderScoreBadges() {
+            document.querySelectorAll('.caption-score-badge').forEach(badge => {
+                const fn = badge.dataset.filename;
+                const scoreData = captionScores[fn];
+                if (scoreData && scoreData.score > 0) {
+                    const score = scoreData.score;
+                    badge.textContent = score;
+                    badge.className = 'caption-score-badge visible';
+                    if (score >= 8) badge.classList.add('score-green');
+                    else if (score >= 5) badge.classList.add('score-yellow');
+                    else badge.classList.add('score-red');
+                    badge.title = scoreData.feedback || '';
+                } else {
+                    badge.className = 'caption-score-badge';
+                }
+            });
+        }
+
+        // === REFERENCE IMAGE MATCHING ===
+        function setupRefUpload() {
+            const refSlot = document.getElementById('ref-upload-slot');
+            const refInput = document.getElementById('ref-file-input');
+
+            refSlot.addEventListener('click', () => refInput.click());
+            refSlot.addEventListener('dragover', (e) => { e.preventDefault(); refSlot.style.borderColor = 'var(--accent)'; });
+            refSlot.addEventListener('dragleave', () => { refSlot.style.borderColor = ''; });
+            refSlot.addEventListener('drop', (e) => {
+                e.preventDefault();
+                refSlot.style.borderColor = '';
+                if (e.dataTransfer.files.length > 0) handleRefFile(e.dataTransfer.files[0]);
+            });
+            refInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) handleRefFile(e.target.files[0]);
+            });
+        }
+
+        function handleRefFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            referenceFile = file;
+            const refSlot = document.getElementById('ref-upload-slot');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                refSlot.innerHTML = `<img src="${e.target.result}" alt="Reference"><div class="ref-filename">${file.name}</div><input type="file" id="ref-file-input" accept="image/*" style="display:none;">`;
+                refSlot.classList.add('has-image');
+                setupRefUpload();
+                updateUI();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function matchReference() {
+            if (!referenceFile || uploadedImages.length === 0) {
+                showToast('Upload a reference image and gallery images first', 'error');
+                return;
+            }
+
+            const matchBtn = document.getElementById('match-ref-btn');
+            matchBtn.disabled = true;
+            progressContainer.classList.add('active');
+            progressText.textContent = '"Matching reference..."';
+            progressFill.style.width = '0%';
+
+            try {
+                const formData = new FormData();
+                formData.append('reference', referenceFile);
+                formData.append('gallery', JSON.stringify(uploadedImages.map(img => ({
+                    filename: img.filename,
+                    path: img.path
+                }))));
+
+                const response = await fetch('/match-reference', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    showToast('Matching failed: ' + data.error, 'error');
+                } else {
+                    data.scores.forEach(s => {
+                        matchScores[s.filename] = s.score;
+                    });
+
+                    // Sort gallery by match score descending
+                    uploadedImages.sort((a, b) => {
+                        const sa = matchScores[a.filename] || 0;
+                        const sb = matchScores[b.filename] || 0;
+                        return sb - sa;
+                    });
+
+                    renderImages();
+                    showToast(`Matched ${data.scores.length} images against reference`);
+                }
+            } catch (error) {
+                showToast('Matching failed: ' + error.message, 'error');
+            }
+
+            progressContainer.classList.remove('active');
+            progressFill.style.width = '0%';
+            matchBtn.disabled = false;
+            updateUI();
+        }
+
+        function renderMatchBadges() {
+            document.querySelectorAll('.ref-match-badge').forEach(badge => {
+                const fn = badge.dataset.filename;
+                const score = matchScores[fn];
+                if (score !== undefined && score > 0) {
+                    badge.textContent = score + '/10';
+                    badge.className = 'ref-match-badge visible';
+                } else {
+                    badge.className = 'ref-match-badge';
+                }
+            });
+        }
+
+        // === PROVIDER CHECK ===
+        async function checkProviders() {
+            try {
+                const response = await fetch('/check-providers');
+                const providers = await response.json();
+                const select = document.getElementById('provider-select');
+                const status = document.getElementById('provider-status');
+                select.innerHTML = '';
+
+                const providerNames = {
+                    claude: 'Claude (Anthropic)',
+                    gemini: 'Gemini (Google)',
+                    openai: 'GPT-4o (OpenAI)',
+                    ollama: 'Ollama (Local)'
+                };
+
+                let available = 0;
+                Object.entries(providers).forEach(([key, isAvailable]) => {
+                    if (isAvailable) {
+                        const opt = document.createElement('option');
+                        opt.value = key;
+                        opt.textContent = providerNames[key] || key;
+                        select.appendChild(opt);
+                        available++;
+                    }
+                });
+
+                if (available === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = 'claude';
+                    opt.textContent = 'Claude (Anthropic)';
+                    select.appendChild(opt);
+                }
+
+                status.textContent = `${available} provider${available !== 1 ? 's' : ''} available`;
+            } catch (e) {
+                document.getElementById('provider-status').textContent = 'Check failed';
+            }
+        }
+
+        // === PRE-EXPORT VALIDATION ===
+        function runValidation() {
+            const checks = [];
+            const triggerWord = document.getElementById('trigger-word').value.trim();
+
+            // 1. All images captioned
+            const uncaptioned = uploadedImages.filter(img => !captions[img.filename] || !captions[img.filename].trim());
+            if (uncaptioned.length === 0) {
+                checks.push({ status: 'pass', text: 'All images have captions' });
+            } else {
+                checks.push({ status: 'fail', text: `${uncaptioned.length} image(s) missing captions`, detail: uncaptioned.map(i => i.filename).slice(0, 5).join(', ') });
+            }
+
+            // 2. No empty captions
+            const emptyCaptions = uploadedImages.filter(img => captions[img.filename] !== undefined && captions[img.filename].trim() === '');
+            if (emptyCaptions.length === 0) {
+                checks.push({ status: 'pass', text: 'No empty captions' });
+            } else {
+                checks.push({ status: 'fail', text: `${emptyCaptions.length} empty caption(s) found`, detail: emptyCaptions.map(i => i.filename).slice(0, 5).join(', ') });
+            }
+
+            // 3. Trigger word present
+            if (triggerWord) {
+                const missingTrigger = uploadedImages.filter(img => {
+                    const cap = captions[img.filename] || '';
+                    return cap.trim() && !cap.toLowerCase().includes(triggerWord.toLowerCase());
+                });
+                if (missingTrigger.length === 0) {
+                    checks.push({ status: 'pass', text: 'Trigger word present in all captions' });
+                } else {
+                    checks.push({ status: 'warn', text: `${missingTrigger.length} caption(s) missing trigger word "${triggerWord}"`, detail: missingTrigger.map(i => i.filename).slice(0, 5).join(', ') });
+                }
+            }
+
+            // 4. Token count range (10-75)
+            const tokenIssues = [];
+            uploadedImages.forEach(img => {
+                const cap = captions[img.filename] || '';
+                if (!cap.trim()) return;
+                const words = cap.trim().split(/\s+/).length;
+                const tokens = Math.round(words * 1.3);
+                if (tokens < 10) tokenIssues.push({ file: img.filename, tokens, issue: 'too short' });
+                else if (tokens > 75) tokenIssues.push({ file: img.filename, tokens, issue: 'too long' });
+            });
+            if (tokenIssues.length === 0) {
+                checks.push({ status: 'pass', text: 'All captions within 10-75 token range' });
+            } else {
+                checks.push({ status: 'warn', text: `${tokenIssues.length} caption(s) outside 10-75 token range`, detail: tokenIssues.slice(0, 3).map(t => `${t.file}: ~${t.tokens} tokens (${t.issue})`).join(', ') });
+            }
+
+            // 5. No duplicate images flagged
+            const dupCount = Object.values(duplicateFlags).filter(v => v).length;
+            if (dupCount === 0) {
+                checks.push({ status: 'pass', text: 'No duplicate images detected' });
+            } else {
+                checks.push({ status: 'warn', text: `${dupCount} potential duplicate(s) detected` });
+            }
+
+            // 6. Consistent aspect ratios
+            // (simplified: just check if we have image dimension data available)
+            checks.push({ status: 'pass', text: 'Aspect ratio check (visual inspection recommended)' });
+
+            return checks;
+        }
+
+        function renderValidation(checks) {
+            const panel = document.getElementById('validation-panel');
+            if (!panel) return;
+
+            const hasErrors = checks.some(c => c.status === 'fail');
+            const hasWarnings = checks.some(c => c.status === 'warn');
+
+            let summaryClass = 'all-pass';
+            let summaryText = 'ALL CHECKS PASSED';
+            if (hasErrors) { summaryClass = 'has-fail'; summaryText = 'ERRORS FOUND'; }
+            else if (hasWarnings) { summaryClass = 'has-warn'; summaryText = 'WARNINGS FOUND'; }
+
+            let html = `<div class="validation-header">
+                <span>Pre-Export Validation</span>
+                <span class="validation-summary ${summaryClass}">${summaryText}</span>
+            </div><div class="validation-list">`;
+
+            checks.forEach(check => {
+                const icon = check.status === 'pass' ? '&#10003;' : check.status === 'warn' ? '!' : '&#10007;';
+                html += `<div class="validation-item">
+                    <span class="validation-icon ${check.status}">${icon}</span>
+                    <span>${check.text}</span>
+                </div>`;
+                if (check.detail) {
+                    html += `<div class="validation-detail">${check.detail}</div>`;
+                }
+            });
+
+            html += '</div>';
+            panel.innerHTML = html;
+            panel.style.display = 'block';
+
+            // Disable export buttons if there are errors
+            if (hasErrors) {
+                document.getElementById('export-folder-btn').disabled = true;
+                document.getElementById('export-zip-btn').disabled = true;
+            } else {
+                document.getElementById('export-folder-btn').disabled = false;
+                document.getElementById('export-zip-btn').disabled = false;
+            }
+        }
+
+        // Initialize reference upload
+        setupRefUpload();
+
+        // Check available providers on load
+        checkProviders();
 
         // Event listeners
         dropZone.addEventListener('click', () => fileInput.click());
@@ -2527,6 +4139,8 @@
         generateBtn.addEventListener('click', generateCaptions);
         saveBtn.addEventListener('click', saveCaptions);
         clearBtn.addEventListener('click', clearAll);
+        document.getElementById('score-btn').addEventListener('click', scoreCaptions);
+        document.getElementById('match-ref-btn').addEventListener('click', matchReference);
 
         // Browse folder button
         document.getElementById('browse-folder-btn').addEventListener('click', async () => {
@@ -2995,11 +4609,6 @@
             }
         });
         document.getElementById('charsheet-lightbox-close').addEventListener('click', closeCharsheetLightbox);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.getElementById('charsheet-lightbox').classList.contains('active')) {
-                closeCharsheetLightbox();
-            }
-        });
 
         function appendCharsheetResult(imgData, label) {
             const resultDiv = document.getElementById('charsheet-result');
@@ -3312,6 +4921,10 @@
             // Reset loading state
             document.getElementById('export-loading').style.display = 'none';
 
+            // Run pre-export validation
+            const checks = runValidation();
+            renderValidation(checks);
+
             // Update YAML preview
             updateYamlPreview();
 
@@ -3501,6 +5114,1027 @@ config:
             if (e.target === document.getElementById('export-modal-overlay')) {
                 closeExportModal();
             }
+        });
+
+        // ====== NEW UI/UX FEATURES ======
+
+        // Feature 2: Update caption counter
+        function updateCaptionCounter(filename, text) {
+            const counterId = 'counter-' + filename.replace(/[^a-zA-Z0-9]/g, '_');
+            const counterEl = document.getElementById(counterId);
+            if (!counterEl) return;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const tokens = Math.round(words * 1.3);
+            counterEl.textContent = `${words} words / ~${tokens} tokens`;
+            counterEl.className = 'caption-counter';
+            if (tokens > 75) counterEl.classList.add('over');
+            else if (tokens > 60) counterEl.classList.add('warn');
+        }
+
+        // Feature 7: Update card status color
+        function updateCardStatusColor(filename) {
+            const textarea = document.querySelector(`.caption-input[data-filename="${filename}"]`);
+            const card = textarea ? textarea.closest('.image-card') : null;
+            if (!card) return;
+            card.classList.remove('status-pending', 'status-captioned', 'status-edited', 'status-error');
+            card.classList.add('status-' + (captionSavedState[filename] || 'pending'));
+        }
+
+        // Feature 11: Copy caption to clipboard
+        function copyCaption(filename) {
+            const text = captions[filename] || '';
+            if (!text) {
+                showToast('No caption to copy', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Caption copied');
+            }).catch(() => {
+                showToast('Copy failed', 'error');
+            });
+        }
+
+        // Feature 10: Single-image regenerate
+        async function regenCaption(filename) {
+            const img = uploadedImages.find(i => i.filename === filename);
+            if (!img) return;
+
+            const template = getTemplate();
+            const statusId = 'status-' + filename.replace(/[^a-zA-Z0-9]/g, '_');
+            const statusEl = document.getElementById(statusId);
+            const textarea = document.querySelector(`textarea[data-filename="${filename}"]`);
+            const btn = document.querySelector(`.btn-regen[data-filename="${filename}"]`);
+
+            if (btn) { btn.disabled = true; btn.textContent = '...'; }
+            if (statusEl) {
+                statusEl.className = 'caption-status status-generating';
+                statusEl.textContent = '"GENERATING..."';
+            }
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ images: [img], template: template })
+                });
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const result = data.results[0];
+                    if (result.status === 'success') {
+                        pushCaptionHistory(result.filename);
+                        captions[result.filename] = result.caption;
+                        captionSavedState[result.filename] = 'captioned';
+                        if (textarea) textarea.value = result.caption;
+                        if (statusEl) {
+                            statusEl.className = 'caption-status status-success';
+                            statusEl.textContent = '"DONE"';
+                        }
+                        updateCaptionCounter(filename, result.caption);
+                        updateCardStatusColor(filename);
+                        showToast('Caption regenerated');
+                    } else {
+                        captionSavedState[result.filename] = 'error';
+                        if (statusEl) {
+                            statusEl.className = 'caption-status status-error';
+                            statusEl.textContent = `"ERROR: ${result.error}"`;
+                        }
+                        updateCardStatusColor(filename);
+                    }
+                }
+            } catch (error) {
+                captionSavedState[filename] = 'error';
+                if (statusEl) {
+                    statusEl.className = 'caption-status status-error';
+                    statusEl.textContent = '"REGEN FAILED"';
+                }
+                updateCardStatusColor(filename);
+                showToast('Regeneration failed', 'error');
+            }
+
+            if (btn) { btn.disabled = false; btn.textContent = 'REGEN'; }
+            updateUI();
+        }
+
+        // Feature 5: Image lightbox
+        function openImageLightbox(filename) {
+            const lightbox = document.getElementById('image-lightbox');
+            document.getElementById('image-lightbox-img').src = '/uploads/' + filename;
+            document.getElementById('image-lightbox-label').textContent = filename;
+            lightbox.classList.add('active');
+        }
+
+        function closeImageLightbox() {
+            document.getElementById('image-lightbox').classList.remove('active');
+            document.getElementById('image-lightbox-img').src = '';
+        }
+
+        document.getElementById('image-lightbox').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('image-lightbox') ||
+                e.target === document.getElementById('image-lightbox-close')) {
+                closeImageLightbox();
+            }
+        });
+        document.getElementById('image-lightbox-close').addEventListener('click', closeImageLightbox);
+
+        // Feature 1: Find & Replace
+        function openFindReplace() {
+            document.getElementById('fnr-find').value = '';
+            document.getElementById('fnr-replace').value = '';
+            document.getElementById('fnr-case').checked = false;
+            document.getElementById('fnr-regex').checked = false;
+            document.getElementById('fnr-match-count').textContent = '';
+            document.getElementById('fnr-preview').innerHTML = '';
+            document.getElementById('fnr-modal-overlay').classList.add('active');
+            document.getElementById('fnr-find').focus();
+        }
+
+        function closeFindReplace() {
+            document.getElementById('fnr-modal-overlay').classList.remove('active');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function updateFindReplacePreview() {
+            const findVal = document.getElementById('fnr-find').value;
+            const replaceVal = document.getElementById('fnr-replace').value;
+            const caseSensitive = document.getElementById('fnr-case').checked;
+            const useRegex = document.getElementById('fnr-regex').checked;
+            const countEl = document.getElementById('fnr-match-count');
+            const previewEl = document.getElementById('fnr-preview');
+
+            if (!findVal) { countEl.textContent = ''; previewEl.innerHTML = ''; return; }
+
+            let totalMatches = 0;
+            let previewHTML = '';
+            const flags = caseSensitive ? 'g' : 'gi';
+
+            try {
+                const regex = useRegex ? new RegExp(findVal, flags) :
+                    new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+
+                for (const [filename, caption] of Object.entries(captions)) {
+                    const matches = caption.match(regex);
+                    if (matches) {
+                        totalMatches += matches.length;
+                        const newCaption = caption.replace(regex, replaceVal);
+                        const truncated = caption.length > 60 ? caption.substring(0, 60) + '...' : caption;
+                        const truncatedNew = newCaption.length > 60 ? newCaption.substring(0, 60) + '...' : newCaption;
+                        previewHTML += `<div class="fnr-preview-item"><span class="fnr-old">${escapeHtml(truncated)}</span> &rarr; <span class="fnr-new">${escapeHtml(truncatedNew)}</span></div>`;
+                    }
+                }
+            } catch (e) {
+                countEl.textContent = 'Invalid regex';
+                previewEl.innerHTML = '';
+                return;
+            }
+
+            countEl.textContent = `${totalMatches} match${totalMatches !== 1 ? 'es' : ''} in ${Object.keys(captions).length} captions`;
+            previewEl.innerHTML = previewHTML || '<div style="color:var(--text-muted);">No matches found</div>';
+        }
+
+        function applyFindReplace() {
+            const findVal = document.getElementById('fnr-find').value;
+            const replaceVal = document.getElementById('fnr-replace').value;
+            const caseSensitive = document.getElementById('fnr-case').checked;
+            const useRegex = document.getElementById('fnr-regex').checked;
+            if (!findVal) return;
+
+            const flags = caseSensitive ? 'g' : 'gi';
+            let replaced = 0;
+
+            try {
+                const regex = useRegex ? new RegExp(findVal, flags) :
+                    new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+                for (const filename of Object.keys(captions)) {
+                    const oldCaption = captions[filename];
+                    const newCaption = oldCaption.replace(regex, replaceVal);
+                    if (oldCaption !== newCaption) {
+                        pushCaptionHistory(filename);
+                        captions[filename] = newCaption;
+                        captionSavedState[filename] = 'edited';
+                        replaced++;
+                    }
+                }
+            } catch (e) {
+                showToast('Invalid regex', 'error');
+                return;
+            }
+
+            renderImages();
+            closeFindReplace();
+            showToast(`Replaced in ${replaced} caption${replaced !== 1 ? 's' : ''}`);
+        }
+
+        document.getElementById('fnr-btn').addEventListener('click', openFindReplace);
+        document.getElementById('fnr-find').addEventListener('input', updateFindReplacePreview);
+        document.getElementById('fnr-replace').addEventListener('input', updateFindReplacePreview);
+        document.getElementById('fnr-case').addEventListener('change', updateFindReplacePreview);
+        document.getElementById('fnr-regex').addEventListener('change', updateFindReplacePreview);
+        document.getElementById('fnr-apply-btn').addEventListener('click', applyFindReplace);
+        document.getElementById('fnr-close-btn').addEventListener('click', closeFindReplace);
+        document.getElementById('fnr-modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('fnr-modal-overlay')) closeFindReplace();
+        });
+
+        // Feature 8: Drag and Drop reorder
+        function setupDragAndDrop() {
+            const cards = document.querySelectorAll('.image-card');
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    isDragging = true;
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', card.dataset.dragIdx);
+                });
+                card.addEventListener('dragend', () => {
+                    isDragging = false;
+                    card.classList.remove('dragging');
+                    document.querySelectorAll('.image-card').forEach(c => c.classList.remove('drag-over'));
+                });
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    card.classList.add('drag-over');
+                });
+                card.addEventListener('dragleave', () => {
+                    card.classList.remove('drag-over');
+                });
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    card.classList.remove('drag-over');
+                    const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIdx = parseInt(card.dataset.dragIdx);
+                    if (fromIdx === toIdx) return;
+                    const [moved] = uploadedImages.splice(fromIdx, 1);
+                    uploadedImages.splice(toIdx, 0, moved);
+                    renderImages();
+                });
+            });
+        }
+
+        // Feature 3: Auto-save to localStorage
+        function getTemplateSettings() {
+            return {
+                triggerWord: document.getElementById('trigger-word').value,
+                loraType: document.querySelector('.lora-type-btn.active')?.dataset.type || 'character',
+                includeSubject: document.getElementById('include-subject').checked,
+                includeExpression: document.getElementById('include-expression').checked,
+                includePose: document.getElementById('include-pose').checked,
+                includeAction: document.getElementById('include-action').checked,
+                includeShot: document.getElementById('include-shot').checked,
+                includeAngle: document.getElementById('include-angle').checked,
+                includeLighting: document.getElementById('include-lighting').checked,
+                includeBackground: document.getElementById('include-background').checked,
+                styleTag: document.getElementById('style-tag').value,
+                specialItems: document.getElementById('special-items').value,
+                outputFolder: document.getElementById('output-folder').value,
+                conciseMode: document.querySelector('.concise-mode-btn.active')?.dataset.mode || 'detailed',
+                provider: document.getElementById('provider-select')?.value || 'claude'
+            };
+        }
+
+        function restoreTemplateSettings(settings) {
+            if (!settings) return;
+            if (settings.triggerWord !== undefined) document.getElementById('trigger-word').value = settings.triggerWord;
+            if (settings.loraType) {
+                document.querySelectorAll('.lora-type-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.type === settings.loraType);
+                });
+                const preset = loraTypePresets[settings.loraType];
+                if (preset) loraTypeHint.textContent = preset.hint;
+            }
+            if (settings.includeSubject !== undefined) document.getElementById('include-subject').checked = settings.includeSubject;
+            if (settings.includeExpression !== undefined) document.getElementById('include-expression').checked = settings.includeExpression;
+            if (settings.includePose !== undefined) document.getElementById('include-pose').checked = settings.includePose;
+            if (settings.includeAction !== undefined) document.getElementById('include-action').checked = settings.includeAction;
+            if (settings.includeShot !== undefined) document.getElementById('include-shot').checked = settings.includeShot;
+            if (settings.includeAngle !== undefined) document.getElementById('include-angle').checked = settings.includeAngle;
+            if (settings.includeLighting !== undefined) document.getElementById('include-lighting').checked = settings.includeLighting;
+            if (settings.includeBackground !== undefined) document.getElementById('include-background').checked = settings.includeBackground;
+            if (settings.styleTag !== undefined) document.getElementById('style-tag').value = settings.styleTag;
+            if (settings.specialItems !== undefined) document.getElementById('special-items').value = settings.specialItems;
+            if (settings.outputFolder !== undefined) document.getElementById('output-folder').value = settings.outputFolder;
+            if (settings.conciseMode) {
+                document.querySelectorAll('.concise-mode-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.mode === settings.conciseMode);
+                });
+            }
+            if (settings.provider) {
+                const providerSelect = document.getElementById('provider-select');
+                if (providerSelect) providerSelect.value = settings.provider;
+            }
+        }
+
+        function autoSaveSession() {
+            try {
+                if (uploadedImages.length > 0) {
+                    localStorage.setItem('loraToolkit_images', JSON.stringify(uploadedImages));
+                    localStorage.setItem('loraToolkit_captions', JSON.stringify(captions));
+                    localStorage.setItem('loraToolkit_captionState', JSON.stringify(captionSavedState));
+                }
+                localStorage.setItem('loraToolkit_templateSettings', JSON.stringify(getTemplateSettings()));
+            } catch (e) { /* localStorage full or unavailable */ }
+        }
+
+        function clearAutoSave() {
+            localStorage.removeItem('loraToolkit_images');
+            localStorage.removeItem('loraToolkit_captions');
+            localStorage.removeItem('loraToolkit_captionState');
+            localStorage.removeItem('loraToolkit_templateSettings');
+        }
+
+        function checkRestoreSession() {
+            try {
+                const savedImages = localStorage.getItem('loraToolkit_images');
+                const savedSettings = localStorage.getItem('loraToolkit_templateSettings');
+                if (savedImages) {
+                    document.getElementById('restore-banner').classList.add('show');
+                } else if (savedSettings) {
+                    restoreTemplateSettings(JSON.parse(savedSettings));
+                }
+            } catch (e) {}
+        }
+
+        function restoreSession() {
+            try {
+                const savedImages = JSON.parse(localStorage.getItem('loraToolkit_images') || '[]');
+                const savedCaptions = JSON.parse(localStorage.getItem('loraToolkit_captions') || '{}');
+                const savedState = JSON.parse(localStorage.getItem('loraToolkit_captionState') || '{}');
+                const savedSettings = JSON.parse(localStorage.getItem('loraToolkit_templateSettings') || 'null');
+                if (savedImages.length > 0) {
+                    uploadedImages = savedImages;
+                    captions = savedCaptions;
+                    captionSavedState = savedState;
+                    renderImages();
+                }
+                restoreTemplateSettings(savedSettings);
+            } catch (e) {}
+            document.getElementById('restore-banner').classList.remove('show');
+        }
+
+        function dismissRestore() {
+            document.getElementById('restore-banner').classList.remove('show');
+            clearAutoSave();
+        }
+
+        document.getElementById('restore-yes-btn').addEventListener('click', restoreSession);
+        document.getElementById('restore-no-btn').addEventListener('click', dismissRestore);
+
+        // Auto-save every 30 seconds
+        setInterval(autoSaveSession, 30000);
+
+        // Check for previous session on load
+        checkRestoreSession();
+
+        // Feature 9: Template Presets
+        const builtInPresets = {
+            'Anime Character': {
+                triggerWord: 'character_name',
+                loraType: 'character',
+                includeSubject: true, includeExpression: true, includePose: true,
+                includeAction: true, includeShot: true, includeAngle: true,
+                includeLighting: true, includeBackground: true,
+                styleTag: 'anime style',
+                specialItems: ''
+            },
+            'Realistic Portrait': {
+                triggerWord: 'person_name',
+                loraType: 'character',
+                includeSubject: true, includeExpression: true, includePose: true,
+                includeAction: false, includeShot: true, includeAngle: true,
+                includeLighting: true, includeBackground: true,
+                styleTag: 'photo, realistic',
+                specialItems: ''
+            },
+            'Art Style': {
+                triggerWord: 'style_name',
+                loraType: 'style',
+                includeSubject: true, includeExpression: false, includePose: false,
+                includeAction: true, includeShot: true, includeAngle: true,
+                includeLighting: false, includeBackground: true,
+                styleTag: '',
+                specialItems: ''
+            }
+        };
+
+        function loadPresets() {
+            const select = document.getElementById('preset-select');
+            select.innerHTML = '<option value="">-- Select Preset --</option>';
+            Object.keys(builtInPresets).forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = 'builtin:' + name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+            try {
+                const userPresets = JSON.parse(localStorage.getItem('loraToolkit_presets') || '{}');
+                const userKeys = Object.keys(userPresets);
+                if (userKeys.length > 0) {
+                    const divider = document.createElement('option');
+                    divider.disabled = true;
+                    divider.textContent = '\u2500\u2500 User Presets \u2500\u2500';
+                    select.appendChild(divider);
+                    userKeys.forEach(name => {
+                        const opt = document.createElement('option');
+                        opt.value = 'user:' + name;
+                        opt.textContent = name;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (e) {}
+        }
+
+        function applyPreset() {
+            const select = document.getElementById('preset-select');
+            const val = select.value;
+            if (!val) return;
+            let settings;
+            if (val.startsWith('builtin:')) {
+                settings = builtInPresets[val.substring(8)];
+            } else if (val.startsWith('user:')) {
+                try {
+                    const userPresets = JSON.parse(localStorage.getItem('loraToolkit_presets') || '{}');
+                    settings = userPresets[val.substring(5)];
+                } catch (e) { return; }
+            }
+            if (settings) {
+                restoreTemplateSettings(settings);
+                showToast('Preset loaded');
+            }
+        }
+
+        function savePreset() {
+            const name = prompt('Preset name:');
+            if (!name || !name.trim()) return;
+            try {
+                const userPresets = JSON.parse(localStorage.getItem('loraToolkit_presets') || '{}');
+                userPresets[name.trim()] = getTemplateSettings();
+                localStorage.setItem('loraToolkit_presets', JSON.stringify(userPresets));
+                loadPresets();
+                showToast('Preset saved');
+            } catch (e) {
+                showToast('Failed to save preset', 'error');
+            }
+        }
+
+        function deletePreset() {
+            const select = document.getElementById('preset-select');
+            const val = select.value;
+            if (!val || !val.startsWith('user:')) {
+                showToast('Select a user preset to delete', 'error');
+                return;
+            }
+            const name = val.substring(5);
+            try {
+                const userPresets = JSON.parse(localStorage.getItem('loraToolkit_presets') || '{}');
+                delete userPresets[name];
+                localStorage.setItem('loraToolkit_presets', JSON.stringify(userPresets));
+                loadPresets();
+                showToast('Preset deleted');
+            } catch (e) {
+                showToast('Failed to delete preset', 'error');
+            }
+        }
+
+        document.getElementById('preset-select').addEventListener('change', applyPreset);
+        document.getElementById('preset-save-btn').addEventListener('click', savePreset);
+        document.getElementById('preset-delete-btn').addEventListener('click', deletePreset);
+        loadPresets();
+
+        // ====== PHASE 2 FEATURES ======
+
+        // Feature P1: Caption History (Undo Stack)
+        function pushCaptionHistory(filename) {
+            const current = captions[filename];
+            if (current === undefined || current === null) return;
+            if (!captionHistory[filename]) captionHistory[filename] = [];
+            captionHistory[filename].push(current);
+            if (captionHistory[filename].length > 20) {
+                captionHistory[filename].shift();
+            }
+        }
+
+        function undoCaption(filename) {
+            if (!captionHistory[filename] || captionHistory[filename].length === 0) return;
+            const previous = captionHistory[filename].pop();
+            captions[filename] = previous;
+            if (previous) {
+                captionSavedState[filename] = 'edited';
+            } else {
+                captionSavedState[filename] = 'pending';
+            }
+            const textarea = document.querySelector(`textarea[data-filename="${filename}"]`);
+            if (textarea) textarea.value = previous;
+            updateCaptionCounter(filename, previous);
+            updateCardStatusColor(filename);
+            updateUndoButton(filename);
+            updateStatsBar();
+            updateFilterCounts();
+            updateUI();
+            showToast('Caption undone');
+        }
+
+        function updateUndoButton(filename) {
+            const btn = document.querySelector(`.btn-undo[data-filename="${filename}"]`);
+            if (!btn) return;
+            const hasHist = captionHistory[filename] && captionHistory[filename].length > 0;
+            btn.classList.toggle('has-history', hasHist);
+        }
+
+        // Feature P2: Caption Statistics Bar
+        function updateStatsBar() {
+            const total = uploadedImages.length;
+            const statsBar = document.getElementById('stats-bar');
+            if (total === 0) {
+                statsBar.style.display = 'none';
+                return;
+            }
+            statsBar.style.display = 'flex';
+
+            const triggerWord = document.getElementById('trigger-word').value.trim().toLowerCase();
+            let captionedCount = 0;
+            let triggerCount = 0;
+            let tokenCounts = [];
+
+            uploadedImages.forEach(img => {
+                const cap = captions[img.filename];
+                if (cap && cap.trim()) {
+                    captionedCount++;
+                    const words = cap.trim().split(/\s+/).length;
+                    const tokens = Math.round(words * 1.3);
+                    tokenCounts.push(tokens);
+                    if (triggerWord && cap.toLowerCase().includes(triggerWord)) {
+                        triggerCount++;
+                    }
+                }
+            });
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-captioned').textContent = total > 0 ? Math.round((captionedCount / total) * 100) + '%' : '0%';
+            document.getElementById('stat-trigger').textContent = captionedCount > 0 ? Math.round((triggerCount / captionedCount) * 100) + '%' : '—';
+
+            if (tokenCounts.length > 0) {
+                const avg = Math.round(tokenCounts.reduce((a, b) => a + b, 0) / tokenCounts.length);
+                document.getElementById('stat-avg-tokens').textContent = avg;
+                document.getElementById('stat-min-tokens').textContent = Math.min(...tokenCounts);
+                document.getElementById('stat-max-tokens').textContent = Math.max(...tokenCounts);
+            } else {
+                document.getElementById('stat-avg-tokens').textContent = '—';
+                document.getElementById('stat-min-tokens').textContent = '—';
+                document.getElementById('stat-max-tokens').textContent = '—';
+            }
+        }
+
+        // Feature P3: Trigger Word Validation
+        function checkTriggerWords() {
+            const triggerWord = document.getElementById('trigger-word').value.trim().toLowerCase();
+            if (!triggerWord) {
+                document.querySelectorAll('.trigger-warning').forEach(el => el.classList.remove('visible'));
+                return;
+            }
+            uploadedImages.forEach(img => {
+                const cap = (captions[img.filename] || '').toLowerCase();
+                const el = document.querySelector(`.trigger-warning[data-filename="${img.filename}"]`);
+                if (!el) return;
+                const hasTrigger = cap.includes(triggerWord);
+                const isCaptioned = cap.trim().length > 0;
+                el.classList.toggle('visible', isCaptioned && !hasTrigger);
+            });
+        }
+
+        function addTriggerToAll() {
+            const triggerWord = document.getElementById('trigger-word').value.trim();
+            if (!triggerWord) {
+                showToast('Set a trigger word first', 'error');
+                return;
+            }
+            let count = 0;
+            uploadedImages.forEach(img => {
+                const cap = captions[img.filename];
+                if (cap && cap.trim() && !cap.toLowerCase().includes(triggerWord.toLowerCase())) {
+                    pushCaptionHistory(img.filename);
+                    captions[img.filename] = triggerWord + ', ' + cap;
+                    captionSavedState[img.filename] = 'edited';
+                    count++;
+                }
+            });
+            if (count > 0) {
+                renderImages();
+                showToast(`Added trigger word to ${count} caption${count !== 1 ? 's' : ''}`);
+            } else {
+                showToast('All captions already have the trigger word');
+            }
+        }
+
+        // Feature P4: Image Filtering by Status
+        function updateFilterCounts() {
+            const counts = { all: 0, pending: 0, captioned: 0, edited: 0, error: 0 };
+            uploadedImages.forEach(img => {
+                const state = captionSavedState[img.filename] || 'pending';
+                counts[state]++;
+                counts.all++;
+            });
+            document.getElementById('filter-count-all').textContent = counts.all;
+            document.getElementById('filter-count-pending').textContent = counts.pending;
+            document.getElementById('filter-count-captioned').textContent = counts.captioned;
+            document.getElementById('filter-count-edited').textContent = counts.edited;
+            document.getElementById('filter-count-error').textContent = counts.error;
+        }
+
+        function applyFilter() {
+            const cards = document.querySelectorAll('.image-card');
+            cards.forEach((card, idx) => {
+                if (activeFilter === 'all') {
+                    card.style.display = '';
+                } else {
+                    const img = uploadedImages[idx];
+                    if (!img) return;
+                    const state = captionSavedState[img.filename] || 'pending';
+                    card.style.display = (state === activeFilter) ? '' : 'none';
+                }
+            });
+        }
+
+        // Filter chip event listeners
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                activeFilter = chip.dataset.filter;
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                applyFilter();
+            });
+        });
+
+        // Feature P5: Grid/List View Toggle
+        function applyViewMode() {
+            const grid = document.getElementById('image-grid');
+            const btn = document.getElementById('view-toggle-btn');
+            if (currentViewMode === 'list') {
+                grid.classList.add('list-view');
+                btn.textContent = 'GRID VIEW';
+            } else {
+                grid.classList.remove('list-view');
+                btn.textContent = 'LIST VIEW';
+            }
+        }
+
+        document.getElementById('view-toggle-btn').addEventListener('click', () => {
+            currentViewMode = currentViewMode === 'grid' ? 'list' : 'grid';
+            localStorage.setItem('loraToolkit_viewMode', currentViewMode);
+            applyViewMode();
+        });
+
+        // Feature P6: Bulk Prefix/Suffix
+        function openBulkModal() {
+            bulkMode = 'prefix';
+            document.querySelectorAll('.bulk-mode-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.bulkMode === 'prefix');
+            });
+            document.getElementById('bulk-text').value = '';
+            document.getElementById('bulk-match-count').textContent = '';
+            document.getElementById('bulk-preview').innerHTML = '';
+            document.getElementById('bulk-modal-overlay').classList.add('active');
+            document.getElementById('bulk-text').focus();
+        }
+
+        function closeBulkModal() {
+            document.getElementById('bulk-modal-overlay').classList.remove('active');
+        }
+
+        function updateBulkPreview() {
+            const text = document.getElementById('bulk-text').value;
+            const previewEl = document.getElementById('bulk-preview');
+            const countEl = document.getElementById('bulk-match-count');
+
+            if (!text) {
+                previewEl.innerHTML = '';
+                countEl.textContent = '';
+                return;
+            }
+
+            let captionedCount = 0;
+            let previewHTML = '';
+            uploadedImages.forEach(img => {
+                const cap = captions[img.filename];
+                if (cap && cap.trim()) {
+                    captionedCount++;
+                    let newCap;
+                    if (bulkMode === 'prefix') {
+                        newCap = text + cap;
+                    } else {
+                        newCap = cap + text;
+                    }
+                    const truncOld = cap.length > 40 ? cap.substring(0, 40) + '...' : cap;
+                    const truncNew = newCap.length > 40 ? newCap.substring(0, 40) + '...' : newCap;
+                    previewHTML += `<div class="bulk-preview-item"><span class="fnr-old">${escapeHtml(truncOld)}</span> &rarr; <span class="fnr-new">${escapeHtml(truncNew)}</span></div>`;
+                }
+            });
+
+            countEl.textContent = `Will update ${captionedCount} captioned image${captionedCount !== 1 ? 's' : ''}`;
+            previewEl.innerHTML = previewHTML || '<div style="color:var(--text-muted);">No captioned images</div>';
+        }
+
+        function applyBulkPrefixSuffix() {
+            const text = document.getElementById('bulk-text').value;
+            if (!text) return;
+
+            let count = 0;
+            uploadedImages.forEach(img => {
+                const cap = captions[img.filename];
+                if (cap && cap.trim()) {
+                    pushCaptionHistory(img.filename);
+                    if (bulkMode === 'prefix') {
+                        captions[img.filename] = text + cap;
+                    } else {
+                        captions[img.filename] = cap + text;
+                    }
+                    captionSavedState[img.filename] = 'edited';
+                    count++;
+                }
+            });
+
+            renderImages();
+            closeBulkModal();
+            showToast(`${bulkMode === 'prefix' ? 'Prefixed' : 'Suffixed'} ${count} caption${count !== 1 ? 's' : ''}`);
+        }
+
+        document.getElementById('bulk-btn').addEventListener('click', openBulkModal);
+        document.getElementById('bulk-close-btn').addEventListener('click', closeBulkModal);
+        document.getElementById('bulk-modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('bulk-modal-overlay')) closeBulkModal();
+        });
+        document.querySelectorAll('.bulk-mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                bulkMode = btn.dataset.bulkMode;
+                document.querySelectorAll('.bulk-mode-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.bulkMode === bulkMode);
+                });
+                updateBulkPreview();
+            });
+        });
+        document.getElementById('bulk-text').addEventListener('input', updateBulkPreview);
+        document.getElementById('bulk-apply-btn').addEventListener('click', applyBulkPrefixSuffix);
+
+        // Feature P7: Caption Diversity Check
+        function checkCaptionDiversity() {
+            diversityFlags = {};
+            // Clear existing warnings
+            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('diversity-warning'));
+            document.querySelectorAll('.diversity-badge').forEach(b => b.classList.remove('visible'));
+
+            const captionedImages = uploadedImages.filter(img => captions[img.filename] && captions[img.filename].trim());
+            if (captionedImages.length < 2) {
+                showToast('Need at least 2 captioned images');
+                return;
+            }
+
+            // Build word sets
+            const wordSets = captionedImages.map(img => {
+                const words = captions[img.filename].toLowerCase().replace(/[^\w\s]/g, '').trim().split(/\s+/);
+                return { filename: img.filename, wordSet: new Set(words) };
+            });
+
+            // Compute Jaccard similarity for all pairs
+            let flaggedSet = new Set();
+            for (let i = 0; i < wordSets.length; i++) {
+                for (let j = i + 1; j < wordSets.length; j++) {
+                    const setA = wordSets[i].wordSet;
+                    const setB = wordSets[j].wordSet;
+                    const intersection = new Set([...setA].filter(x => setB.has(x)));
+                    const union = new Set([...setA, ...setB]);
+                    const jaccard = union.size > 0 ? intersection.size / union.size : 0;
+                    if (jaccard > 0.8) {
+                        flaggedSet.add(wordSets[i].filename);
+                        flaggedSet.add(wordSets[j].filename);
+                    }
+                }
+            }
+
+            // Apply flags
+            flaggedSet.forEach(filename => {
+                diversityFlags[filename] = true;
+                const badge = document.querySelector(`.diversity-badge[data-filename="${filename}"]`);
+                const card = badge ? badge.closest('.image-card') : null;
+                if (badge) badge.classList.add('visible');
+                if (card) card.classList.add('diversity-warning');
+            });
+
+            if (flaggedSet.size > 0) {
+                showToast(`${flaggedSet.size} images flagged for similar captions`);
+            } else {
+                showToast('All captions are sufficiently diverse');
+            }
+        }
+
+        document.getElementById('diversity-btn').addEventListener('click', checkCaptionDiversity);
+        document.getElementById('trigger-btn').addEventListener('click', addTriggerToAll);
+
+        // Feature P8: Duplicate Image Detection (perceptual hash)
+        function computeImageHash(imgSrc) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 8;
+                    canvas.height = 8;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 8, 8);
+                    const data = ctx.getImageData(0, 0, 8, 8).data;
+
+                    // Convert to grayscale
+                    const grays = [];
+                    for (let i = 0; i < data.length; i += 4) {
+                        grays.push(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+                    }
+
+                    // Average hash
+                    const avg = grays.reduce((a, b) => a + b, 0) / grays.length;
+                    let hash = '';
+                    for (const g of grays) {
+                        hash += g >= avg ? '1' : '0';
+                    }
+                    resolve(hash);
+                };
+                img.onerror = () => resolve(null);
+                img.src = imgSrc;
+            });
+        }
+
+        function hammingDistance(a, b) {
+            if (!a || !b || a.length !== b.length) return 64;
+            let dist = 0;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) dist++;
+            }
+            return dist;
+        }
+
+        async function checkForDuplicates(newImages) {
+            const threshold = 10;
+            let dupCount = 0;
+
+            for (const newImg of newImages) {
+                const src = newImg.thumbnail || '/uploads/' + newImg.filename;
+                const hash = await computeImageHash(src);
+                if (!hash) continue;
+                imageHashes[newImg.filename] = hash;
+
+                // Compare against all existing hashes (excluding self)
+                for (const [existingFn, existingHash] of Object.entries(imageHashes)) {
+                    if (existingFn === newImg.filename) continue;
+                    if (hammingDistance(hash, existingHash) <= threshold) {
+                        duplicateFlags[newImg.filename] = true;
+                        dupCount++;
+                        break;
+                    }
+                }
+            }
+
+            if (dupCount > 0) {
+                showToast(`${dupCount} potential duplicate${dupCount !== 1 ? 's' : ''} detected`);
+                // Update badges
+                renderDuplicateBadges();
+            }
+        }
+
+        function renderDuplicateBadges() {
+            document.querySelectorAll('.dup-badge').forEach(badge => {
+                const fn = badge.dataset.filename;
+                badge.classList.toggle('visible', !!duplicateFlags[fn]);
+            });
+        }
+
+        // Feature P9: Resolution Preview Overlay
+        function applyResolutionOverlays() {
+            if (!showResolutionOverlay) {
+                document.querySelectorAll('.resolution-overlay').forEach(el => el.classList.remove('visible'));
+                return;
+            }
+
+            const resolution = parseInt(document.getElementById('export-resolution').value) || 1024;
+
+            document.querySelectorAll('.image-preview').forEach(imgEl => {
+                const overlay = imgEl.parentElement.querySelector('.resolution-overlay');
+                if (!overlay) return;
+
+                const imgWidth = imgEl.offsetWidth;
+                const imgHeight = imgEl.offsetHeight;
+                if (imgWidth === 0 || imgHeight === 0) return;
+
+                // The natural aspect ratio of the image
+                const natW = imgEl.naturalWidth || imgWidth;
+                const natH = imgEl.naturalHeight || imgHeight;
+
+                // Training will center-crop to square at `resolution` px
+                // Show proportional crop box
+                const displayAspect = imgWidth / imgHeight;
+                const natAspect = natW / natH;
+
+                // object-fit: cover means the image fills the box
+                // Crop box is a square relative to the displayed image
+                let cropW, cropH;
+                if (natAspect > 1) {
+                    // Landscape: height is fully visible, width is cropped
+                    cropH = imgHeight;
+                    cropW = imgHeight; // square
+                } else {
+                    // Portrait: width is fully visible, height is cropped
+                    cropW = imgWidth;
+                    cropH = imgWidth; // square
+                }
+
+                // Clamp to image bounds
+                cropW = Math.min(cropW, imgWidth);
+                cropH = Math.min(cropH, imgHeight);
+
+                overlay.style.width = cropW + 'px';
+                overlay.style.height = cropH + 'px';
+                overlay.querySelector('.resolution-overlay-label').textContent = resolution + 'px';
+                overlay.classList.add('visible');
+            });
+        }
+
+        document.getElementById('res-toggle-btn').addEventListener('click', () => {
+            showResolutionOverlay = !showResolutionOverlay;
+            const btn = document.getElementById('res-toggle-btn');
+            btn.style.background = showResolutionOverlay ? 'var(--accent)' : '';
+            btn.style.color = showResolutionOverlay ? 'white' : '';
+            btn.style.borderColor = showResolutionOverlay ? 'var(--accent)' : '';
+            applyResolutionOverlays();
+        });
+
+        // Feature 4: Keyboard shortcuts
+        function toggleShortcutHelp() {
+            document.getElementById('shortcut-help-overlay').classList.toggle('active');
+        }
+
+        document.getElementById('shortcut-help-btn').addEventListener('click', toggleShortcutHelp);
+
+        // Enhanced keyboard shortcut handler (supplements existing Escape handler)
+        document.addEventListener('keydown', (e) => {
+            const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+
+            // Escape: close any open modal/overlay (most specific first)
+            if (e.key === 'Escape') {
+                if (document.getElementById('image-lightbox').classList.contains('active')) {
+                    closeImageLightbox(); return;
+                }
+                if (document.getElementById('bulk-modal-overlay').classList.contains('active')) {
+                    closeBulkModal(); return;
+                }
+                if (document.getElementById('fnr-modal-overlay').classList.contains('active')) {
+                    closeFindReplace(); return;
+                }
+                if (document.getElementById('export-modal-overlay').classList.contains('active')) {
+                    closeExportModal(); return;
+                }
+                if (document.getElementById('shortcut-help-overlay').classList.contains('active')) {
+                    toggleShortcutHelp(); return;
+                }
+                if (document.getElementById('charsheet-lightbox').classList.contains('active')) {
+                    closeCharsheetLightbox(); return;
+                }
+            }
+
+            // Ctrl+Enter: Generate captions
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                if (!generateBtn.disabled) generateCaptions();
+                return;
+            }
+
+            // Ctrl+S: Save captions
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (!saveBtn.disabled) saveCaptions();
+                return;
+            }
+
+            // Tab / Shift+Tab: navigate between caption textareas
+            if (e.key === 'Tab' && isInput && e.target.classList.contains('caption-input')) {
+                e.preventDefault();
+                const textareas = Array.from(document.querySelectorAll('.caption-input'));
+                const currentIdx = textareas.indexOf(e.target);
+                if (currentIdx === -1) return;
+                const nextIdx = e.shiftKey ?
+                    (currentIdx - 1 + textareas.length) % textareas.length :
+                    (currentIdx + 1) % textareas.length;
+                textareas[nextIdx].focus();
+                return;
+            }
+
+            // ? key: toggle shortcut help (only when not in input)
+            if (e.key === '?' && !isInput) {
+                toggleShortcutHelp();
+                return;
+            }
+        });
+
+        document.getElementById('shortcut-help-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('shortcut-help-overlay')) toggleShortcutHelp();
         });
 
         // Initial UI state

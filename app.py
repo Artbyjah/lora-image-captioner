@@ -13,6 +13,12 @@ import io
 import cv2
 from google import genai
 from google.genai import types
+import requests as http_requests
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 # Load .env from the same directory as this script
 APP_DIR = Path(__file__).parent.resolve()
@@ -60,6 +66,25 @@ if google_api_key:
         print(f"Google API Key error: {e}")
 else:
     print("Google API Key loaded: No (character sheet generation disabled)")
+
+# OpenAI client (optional, for multi-provider captioning)
+openai_client = None
+openai_api_key = os.getenv('OPENAI_API_KEY')
+if not openai_api_key and env_path.exists():
+    with open(env_path, 'r') as f:
+        for line in f:
+            if line.startswith('OPENAI_API_KEY='):
+                openai_api_key = line.strip().split('=', 1)[1]
+                break
+
+if openai_api_key and OpenAI:
+    try:
+        openai_client = OpenAI(api_key=openai_api_key)
+        print(f"OpenAI API Key loaded: Yes")
+    except Exception as e:
+        print(f"OpenAI API Key error: {e}")
+else:
+    print(f"OpenAI API Key loaded: No")
 
 
 @app.errorhandler(413)
@@ -151,10 +176,8 @@ def get_image_media_type(image_path):
         return media_types.get(ext, 'image/jpeg')
 
 
-def generate_caption(image_path, template):
-    """Generate caption for an image using Claude Vision."""
-    base64_image, media_type = encode_image(image_path)
-
+def _build_caption_prompt(template):
+    """Build the caption prompt from template settings — shared across all providers."""
     lora_type = template.get('lora_type', 'character')
 
     # Type-specific captioning instructions
@@ -188,6 +211,14 @@ def generate_caption(image_path, template):
             "Describe every concrete, tangible element in the image — subjects, objects, settings, clothing, colors, spatial details. "
             "Do NOT describe the concept itself (the pattern, arrangement, effect, technique, or abstract quality). "
             "The concept is captured entirely by the trigger word."
+        ),
+        'motion': (
+            "You are captioning images for motion LoRA training (video/animation frames). "
+            "The trigger word represents a SPECIFIC MOVEMENT or MOTION PATTERN. "
+            "Focus on: movement dynamics, direction of motion, speed/velocity cues, camera motion (pan, tilt, zoom, tracking), "
+            "trajectory of subjects, body mechanics and pose transitions, motion blur indicators, temporal flow. "
+            "Describe the scene content (subjects, environment) but emphasize HOW things are moving, "
+            "not just what is present. The trigger word captures the motion pattern itself."
         )
     }
 
@@ -196,7 +227,8 @@ def generate_caption(image_path, template):
         'character': "character_name, a young man in a red beanie and white t-shirt, relaxed, crouching on a skateboard, riding a skateboard down the street, full body shot, side view, soft even lighting, white neutral background, illustration style",
         'style': "ohwx, a woman in a white dress sitting in a garden, holding a parasol, flowers surrounding her, a stone path leading to a cottage in the background, full body shot, front view",
         'object': "a ohwx mug on a wooden kitchen counter, morning light from a window, coffee inside, steam rising, close-up, slightly angled, soft even lighting, cozy kitchen background, product photography",
-        'concept': "ohwx_concept, a woman in a blue sundress, on a beach, waves in background, full body shot, low angle, golden hour, sandy shore with footprints"
+        'concept': "ohwx_concept, a woman in a blue sundress, on a beach, waves in background, full body shot, low angle, golden hour, sandy shore with footprints",
+        'motion': "ohwx_motion, a man sprinting forward, rapid stride with arms pumping, slight forward lean, motion blur on limbs, camera tracking laterally, medium shot, side view, outdoor track, daylight"
     }
 
     # Build the prompt based on template settings
@@ -250,7 +282,21 @@ def generate_caption(image_path, template):
     prompt_parts.append("\n\nIMPORTANT: Return ONLY the caption as a single line of comma-separated tags. No explanations, no quotes around the full caption.")
     prompt_parts.append(f"\nExample output: {type_examples.get(lora_type, type_examples['character'])}")
 
+    # Concise mode: limit output to ~40 tokens
+    if template.get('concise_mode'):
+        prompt_parts.append(
+            "\n\nCONCISE MODE: Limit caption to ~40 tokens. "
+            "Short factual tags only, no filler, no articles."
+        )
+
     prompt = "".join(prompt_parts)
+    return prompt
+
+
+def generate_caption(image_path, template):
+    """Generate caption for an image using Claude Vision."""
+    base64_image, media_type = encode_image(image_path)
+    prompt = _build_caption_prompt(template)
 
     message = client.messages.create(
         model="claude-sonnet-4-20250514",
@@ -277,6 +323,84 @@ def generate_caption(image_path, template):
     )
 
     return message.content[0].text.strip()
+
+
+def generate_caption_gemini(image_path, template):
+    """Generate caption for an image using Gemini Vision."""
+    if not gemini_client:
+        raise Exception("Gemini API key not configured")
+
+    prompt = _build_caption_prompt(template)
+    img = Image.open(image_path)
+
+    response = gemini_client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=[prompt, img],
+        config=types.GenerateContentConfig(
+            response_modalities=['Text']
+        )
+    )
+
+    for part in response.parts:
+        if hasattr(part, 'text') and part.text is not None:
+            return part.text.strip()
+
+    return ""
+
+
+def generate_caption_openai(image_path, template):
+    """Generate caption for an image using OpenAI GPT-4o."""
+    if not openai_client:
+        raise Exception("OpenAI API key not configured")
+
+    base64_image, media_type = encode_image(image_path)
+    prompt = _build_caption_prompt(template)
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=300,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{media_type};base64,{base64_image}"
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
+            }
+        ]
+    )
+
+    return response.choices[0].message.content.strip()
+
+
+def generate_caption_ollama(image_path, template):
+    """Generate caption for an image using local Ollama with llava model."""
+    base64_image, _ = encode_image(image_path)
+    prompt = _build_caption_prompt(template)
+
+    response = http_requests.post(
+        'http://localhost:11434/api/generate',
+        json={
+            'model': 'llava',
+            'prompt': prompt,
+            'images': [base64_image],
+            'stream': False
+        },
+        timeout=120
+    )
+
+    if response.status_code != 200:
+        raise Exception(f"Ollama error: {response.status_code}")
+
+    return response.json().get('response', '').strip()
 
 
 @app.route('/')
@@ -331,12 +455,23 @@ def generate_captions():
     images = data.get('images', [])
     template = data.get('template', DEFAULT_TEMPLATE)
 
+    provider = template.get('provider', 'claude')
+
+    # Provider dispatch map
+    provider_functions = {
+        'claude': generate_caption,
+        'gemini': generate_caption_gemini,
+        'openai': generate_caption_openai,
+        'ollama': generate_caption_ollama,
+    }
+    caption_fn = provider_functions.get(provider, generate_caption)
+
     results = []
     for img in images:
         filepath = Path(img['path'])
         if filepath.exists():
             try:
-                caption = generate_caption(str(filepath), template)
+                caption = caption_fn(str(filepath), template)
                 results.append({
                     'filename': img['filename'],
                     'path': img['path'],
@@ -594,6 +729,17 @@ def analyze_frames():
             "- Clear, high-quality frames where the concept is prominent\n"
             "- AVOID: frames where the concept is weak/unclear, transitional frames, ambiguous content\n"
             "Prioritize frames where the concept is most clearly demonstrated across diverse subjects."
+        ),
+        'motion': (
+            "You are selecting the best frames for MOTION LoRA training. "
+            "A good motion dataset needs:\n"
+            "- VARIETY of motion phases (start, mid, peak, recovery)\n"
+            "- Clear depiction of movement dynamics (not static poses)\n"
+            "- Different camera angles capturing the motion\n"
+            "- Frames showing speed, trajectory, and body mechanics\n"
+            "- Motion blur that conveys velocity without obscuring the subject\n"
+            "- AVOID: completely static frames, heavily blurred/unreadable frames, duplicate motion phases\n"
+            "Prioritize frames that best capture distinct phases of the motion pattern."
         )
     }
 
@@ -1235,6 +1381,268 @@ def export_toolkit_zip():
         as_attachment=True,
         download_name=f'{output_name}.zip'
     )
+
+
+@app.route('/score-captions', methods=['POST'])
+def score_captions():
+    """Score caption quality using Claude Vision — batches of 8."""
+    data = request.json
+    images = data.get('images', [])
+    lora_type = data.get('lora_type', 'character')
+
+    if not images:
+        return jsonify({'error': 'No images provided'}), 400
+
+    BATCH_SIZE = 8
+    all_scores = []
+    total_batches = (len(images) + BATCH_SIZE - 1) // BATCH_SIZE
+
+    print(f"Scoring {len(images)} captions in {total_batches} batches...")
+
+    for batch_start in range(0, len(images), BATCH_SIZE):
+        batch = images[batch_start:batch_start + BATCH_SIZE]
+        content_blocks = []
+        valid_in_batch = []
+
+        for item in batch:
+            frame_path = Path(item['path'])
+            if not frame_path.exists():
+                all_scores.append({
+                    'filename': item['filename'],
+                    'score': 0,
+                    'feedback': 'File not found'
+                })
+                continue
+
+            b64_thumb, media_type = encode_image_for_analysis(str(frame_path))
+            if not b64_thumb:
+                all_scores.append({
+                    'filename': item['filename'],
+                    'score': 0,
+                    'feedback': 'Encoding error'
+                })
+                continue
+
+            content_blocks.append({
+                "type": "text",
+                "text": f"[Image: {item['filename']}] Caption: \"{item.get('caption', '')}\""
+            })
+            content_blocks.append({
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": media_type,
+                    "data": b64_thumb
+                }
+            })
+            valid_in_batch.append(item['filename'])
+
+        if not content_blocks:
+            continue
+
+        batch_num = (batch_start // BATCH_SIZE) + 1
+        print(f"  Scoring batch {batch_num}/{total_batches} ({len(valid_in_batch)} items)...")
+
+        prompt = (
+            f"You are evaluating caption quality for {lora_type} LoRA training images.\n\n"
+            f"For each image+caption pair, score from 1-10 on:\n"
+            f"- Accuracy: Does the caption match what's in the image?\n"
+            f"- Conciseness: Is it appropriately concise without being vague?\n"
+            f"- Tag coverage: Are the important visual elements captured?\n"
+            f"- Training suitability: Will this caption help a LoRA model learn effectively?\n\n"
+            f"Respond ONLY with a JSON array:\n"
+            f'[{{"filename": "example.jpg", "score": 8, "feedback": "brief feedback"}}, ...]\n\n'
+            f"Include ALL {len(valid_in_batch)} items. No extra text."
+        )
+        content_blocks.append({"type": "text", "text": prompt})
+
+        try:
+            message = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4000,
+                messages=[{"role": "user", "content": content_blocks}]
+            )
+
+            response_text = message.content[0].text.strip()
+            if response_text.startswith('```'):
+                response_text = response_text.split('\n', 1)[1]
+                response_text = response_text.rsplit('```', 1)[0]
+            response_text = response_text.strip()
+
+            batch_scores = json.loads(response_text)
+            for item in batch_scores:
+                all_scores.append({
+                    'filename': item.get('filename', ''),
+                    'score': item.get('score', 5),
+                    'feedback': item.get('feedback', '')
+                })
+        except Exception as e:
+            print(f"  Scoring batch error: {e}")
+            for fn in valid_in_batch:
+                if not any(s['filename'] == fn for s in all_scores):
+                    all_scores.append({
+                        'filename': fn,
+                        'score': 5,
+                        'feedback': 'Scoring failed'
+                    })
+
+    print(f"Scoring complete. {len(all_scores)} results.")
+    return jsonify({'scores': all_scores})
+
+
+@app.route('/match-reference', methods=['POST'])
+def match_reference():
+    """Score gallery images for similarity to a reference image using Claude Vision."""
+    if 'reference' not in request.files:
+        return jsonify({'error': 'No reference image provided'}), 400
+
+    ref_file = request.files['reference']
+    gallery_json = request.form.get('gallery', '[]')
+
+    try:
+        gallery = json.loads(gallery_json)
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid gallery data'}), 400
+
+    if not gallery:
+        return jsonify({'error': 'No gallery images provided'}), 400
+
+    # Save reference temporarily
+    ref_filename = f"ref_match_{ref_file.filename}"
+    ref_path = UPLOAD_FOLDER / ref_filename
+    ref_file.save(ref_path)
+
+    try:
+        # Encode reference as 512px thumbnail
+        ref_b64, ref_media = encode_image_for_analysis(str(ref_path))
+        if not ref_b64:
+            return jsonify({'error': 'Failed to encode reference image'}), 400
+
+        BATCH_SIZE = 8
+        all_scores = []
+        total_batches = (len(gallery) + BATCH_SIZE - 1) // BATCH_SIZE
+
+        print(f"Matching {len(gallery)} images against reference in {total_batches} batches...")
+
+        for batch_start in range(0, len(gallery), BATCH_SIZE):
+            batch = gallery[batch_start:batch_start + BATCH_SIZE]
+            content_blocks = [
+                {"type": "text", "text": "[REFERENCE IMAGE]"},
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": ref_media,
+                        "data": ref_b64
+                    }
+                },
+                {"type": "text", "text": "Compare each gallery image below to this reference:"}
+            ]
+            valid_in_batch = []
+
+            for item in batch:
+                frame_path = Path(item['path'])
+                if not frame_path.exists():
+                    all_scores.append({'filename': item['filename'], 'score': 0})
+                    continue
+
+                b64_thumb, media_type = encode_image_for_analysis(str(frame_path))
+                if not b64_thumb:
+                    all_scores.append({'filename': item['filename'], 'score': 0})
+                    continue
+
+                content_blocks.append({
+                    "type": "text",
+                    "text": f"[Gallery: {item['filename']}]"
+                })
+                content_blocks.append({
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": media_type,
+                        "data": b64_thumb
+                    }
+                })
+                valid_in_batch.append(item['filename'])
+
+            if not valid_in_batch:
+                continue
+
+            batch_num = (batch_start // BATCH_SIZE) + 1
+            print(f"  Match batch {batch_num}/{total_batches} ({len(valid_in_batch)} images)...")
+
+            prompt = (
+                f"Score each gallery image from 1-10 for visual similarity to the reference image.\n"
+                f"Consider: subject identity, pose similarity, style, composition, color palette.\n\n"
+                f"Respond ONLY with a JSON array:\n"
+                f'[{{"filename": "example.jpg", "score": 8}}, ...]\n\n'
+                f"Include ALL {len(valid_in_batch)} gallery images. No extra text."
+            )
+            content_blocks.append({"type": "text", "text": prompt})
+
+            try:
+                message = client.messages.create(
+                    model="claude-sonnet-4-20250514",
+                    max_tokens=2000,
+                    messages=[{"role": "user", "content": content_blocks}]
+                )
+
+                response_text = message.content[0].text.strip()
+                if response_text.startswith('```'):
+                    response_text = response_text.split('\n', 1)[1]
+                    response_text = response_text.rsplit('```', 1)[0]
+                response_text = response_text.strip()
+
+                batch_scores = json.loads(response_text)
+                for item in batch_scores:
+                    all_scores.append({
+                        'filename': item.get('filename', ''),
+                        'score': item.get('score', 5)
+                    })
+            except Exception as e:
+                print(f"  Match batch error: {e}")
+                for fn in valid_in_batch:
+                    if not any(s['filename'] == fn for s in all_scores):
+                        all_scores.append({'filename': fn, 'score': 5})
+
+        print(f"Reference matching complete. {len(all_scores)} results.")
+        return jsonify({'scores': all_scores})
+
+    finally:
+        try:
+            ref_path.unlink()
+        except Exception:
+            pass
+
+
+@app.route('/check-providers', methods=['GET'])
+def check_providers():
+    """Check which captioning providers are available."""
+    providers = {
+        'claude': api_key is not None,
+        'gemini': gemini_client is not None,
+        'openai': False,
+        'ollama': False
+    }
+
+    # Check OpenAI
+    openai_key = os.getenv('OPENAI_API_KEY')
+    if not openai_key and env_path.exists():
+        with open(env_path, 'r') as f:
+            for line in f:
+                if line.startswith('OPENAI_API_KEY='):
+                    openai_key = line.strip().split('=', 1)[1]
+                    break
+    providers['openai'] = bool(openai_key)
+
+    # Check Ollama
+    try:
+        resp = http_requests.get('http://localhost:11434/api/tags', timeout=2)
+        providers['ollama'] = resp.status_code == 200
+    except Exception:
+        providers['ollama'] = False
+
+    return jsonify(providers)
 
 
 if __name__ == '__main__':
